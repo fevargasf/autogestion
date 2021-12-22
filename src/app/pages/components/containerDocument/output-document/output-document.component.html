@@ -1,0 +1,43 @@
+
+<!-- header part -->
+<app-header
+  [fileName]="fileName"
+  [currentPage]="pageVariable"
+  [totalPages]="totalPages"
+  [zoomAmt]="zoom"
+  [zoomMax]="zoomMax"
+  [zoomMin]="zoomMin"
+ 
+  
+></app-header>
+<!-- <a [href]="pdfSrc | domSeguro" download="Documento.pdf">Descargar Evidencia</a>  -->
+<!-- pdf-viewer section -->
+<div class="output-pdf-viewer">
+  <script src="/src/assets/vfs_fonts.js"></script>
+  <script src="/node_modules/pdfmake/build/pdfmake.js"></script>
+  <pdf-viewer
+    [src]="pdfSrc"
+    [(page)]="pageVariable"
+    [show-all]="true"
+    [stick-to-page]="true"
+    [render-text]="true"
+    [original-size]="false"
+    [fit-to-page]="true"
+    [autoresize]="true"
+    [show-borders]="true"
+    (on-progress)="onProgress($event)"
+    [zoom]="zoom"
+    (after-load-complete)="afterLoadComplete($event)"
+    #pdfViewer
+  ></pdf-viewer>
+
+ <!-- 
+  <mat-progress-bar
+  *ngIf="upload"
+  [mode]="upload.state == 'PENDING' ? 'buffer' : 'determinate'"
+  [value]="upload.progress"
+>
+</mat-progress-bar> -->
+
+</div>
+

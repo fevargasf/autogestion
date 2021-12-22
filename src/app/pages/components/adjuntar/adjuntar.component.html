@@ -1,0 +1,364 @@
+<br />
+<br />
+<br />
+<div class="letter-text-resoluction">
+  <h2>
+    <b>Paso 2:</b> En esta sección agregará las obligaciones para realizar la
+    autogestión en este módulo, por favor, revíselas y una a una describa el
+    cumplimiento de cada obligación.
+  </h2>
+</div>
+
+<br />
+<br />
+<div>
+  <h1>{{ "Expediente :" + expediente }}</h1>
+</div>
+
+<mat-card class="mat-elevation-z10">
+  <mat-card-header>
+    <mat-card-title>{{
+      "La resolución " +
+        resolucionInput.radicado +
+        " a la cual esta realizando la correspondiente autogestión"
+    }}</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content fxLayout="row" fxLayoutGap="8px">
+    <div fxFlex>
+      <iframe
+        height="100%"
+        width="100%"
+        [src]="resolucionInput.link_descarga | domSeguro" title="Ver PDF"
+        >Ver PDF</iframe
+      >
+    </div>
+    <!--  <div fxFlex>
+        <iframe height="100%" width="100%" [src]="resolucionInput.link_descarga | domSeguro" title="Ver PDF">Ver
+          PDF</iframe>
+      </div> -->
+    <div fxFlex fxLayout="column">
+      <div class="letter-add">
+        <h2>Añadir más obligaciones.</h2>
+      </div>
+      <div
+        class="letter-icon"
+        mat-mini-fab
+        color="primary"
+        type="button"
+        (click)="addFormObligacion()"
+        placement="top"
+        ngbTooltip="Crea un nuevo formulario!"
+      >
+        <mat-icon style="color: rgb(245, 209, 8)">add_circle</mat-icon>
+      </div>
+      <div [formGroup]="formObligaciones">
+        <ng-container formArrayName="obligaciones">
+          <mat-accordion multi #matAccordion>
+            <div
+              *ngFor="
+                let lessonForm of obligacionesFormArray.controls;
+                let indexForm = index
+              "
+            >
+              <mat-expansion-panel fxFlex>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Obligaci&oacute;n:
+                    {{
+                      obligacionesFormArray.controls[indexForm].value[
+                        "descripcion"
+                      ]
+                    }}
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <form
+                  fxLayout="column"
+                  [formGroupName]="indexForm"
+                  (ngSubmit)="saveObligation(indexForm)"
+                >
+                  <input type="hidden" formControlName="line" />
+                  <mat-form-field fxFlex appearance="outline">
+                    <mat-label>Nombre de la Obligaci&oacute;n:</mat-label>
+                    <input matInput type="text" formControlName="descripcion" />
+                  </mat-form-field>
+                  <mat-form-field fxFlex appearance="outline">
+                    <mat-label>Observaciones:</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      formControlName="observaciones"
+                    />
+                  </mat-form-field>
+
+                  <!-- Agregar Coordenadas y Evidencias -->
+                  <mat-card fxFlex>
+                    <mat-card-header>
+                      <mat-card-subtitle>
+                        <span
+                          >AQUÍ! cargar solo Imagenes/Fotos de evidencia con
+                          Coordenadas y fecha.</span
+                        >
+                        <input
+                          #inputFileEvidencia
+                          accept="image/*"
+                          type="file"
+                          multiple
+                          hidden
+                          (change)="
+                            selectFiles(
+                              inputFileEvidencia.files,
+                              indexForm,
+                              true
+                            )
+                          "
+                        />
+                        <div
+                          mat-icon-button
+                          color="primay"
+                          type="button"
+                          (click)="inputFileEvidencia.click()"
+                          placement="top"
+                          ngbTooltip="Adjuntar fotos e imagenes con Coordenadas y fecha de la foto. "
+                        >
+                          <mat-icon>add_circle</mat-icon>
+                        </div>
+                      </mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ng-container
+                        *ngFor="
+                          let evidenciaData of filesByFormIndex(indexForm);
+                          let indexFile = index;
+                          let last = last
+                        "
+                      >
+                        <div
+                          *ngIf="evidenciaData.isEvidencia"
+                          fxLayout="row"
+                          fxLayoutGap="8px"
+                          fxLayoutAlign="space-around center"
+                        >
+                          <mat-form-field fxFlex appearance="outline">
+                            <mat-label>Coordenada X:</mat-label>
+                            <input
+                              matInput
+                              type="number"
+                              [value]="evidenciaData.coorX"
+                              (keyup)="
+                                setValueEvidencia(
+                                  $event,
+                                  'coorX',
+                                  indexFile,
+                                  indexForm
+                                )
+                              "
+                            />
+                          </mat-form-field>
+                          <mat-form-field fxFlex appearance="outline">
+                            <mat-label>Coordenada Y:</mat-label>
+                            <input
+                              matInput
+                              type="number"
+                              [value]="evidenciaData.coorY"
+                              (keyup)="
+                                setValueEvidencia(
+                                  $event,
+                                  'coorY',
+                                  indexFile,
+                                  indexForm
+                                )
+                              "
+                            />
+                          </mat-form-field>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Fecha de la Foto:</mat-label>
+                            <input
+                              #fecha
+                              [disabled]="true"
+                              [value]="evidenciaData.fechaFoto"
+                              [max]="maxDate"
+                              matInput
+                              [matDatepicker]="picker"
+                              (dateChange)="
+                                setValueEvidencia(
+                                  $event,
+                                  'fechaFoto',
+                                  indexFile,
+                                  indexForm
+                                )
+                              "
+                              disabled
+                            />
+                            <mat-datepicker-toggle
+                              matSuffix
+                              [for]="picker"
+                            ></mat-datepicker-toggle>
+                            <mat-datepicker
+                              #picker
+                              disabled="false"
+                            ></mat-datepicker>
+                          </mat-form-field>
+                          <div
+                            (click)="
+                              deletedFile(
+                                indexForm,
+                                indexFile,
+                                evidenciaData.file.name
+                              )
+                            "
+                            mat-icon-button
+                            type="button"
+                            color="warn"
+                            placement="top"
+                            ngbTooltip="Elimina una foto!"
+                          >
+                            <mat-icon style="color: rgb(245, 8, 8)"
+                              >delete</mat-icon
+                            >
+                          </div>
+                        </div>
+                      </ng-container>
+                    </mat-card-content>
+                  </mat-card>
+
+                  <div *ngIf="filesByFormIndex(indexForm).length">
+                    <mat-list>
+                      <mat-list-item
+                        *ngFor="
+                          let evidenciaData of filesByFormIndex(indexForm);
+                          let indexFile = index;
+                          let last = last
+                        "
+                      >
+                        <div
+                          class="w-100"
+                          fxLayout="row"
+                          fxLayoutAlign="space-between center"
+                        >
+                          <span>{{ evidenciaData.file.name | json }}</span>
+                          <div
+                            *ngIf="!evidenciaData.isEvidencia"
+                            type="button"
+                            (click)="
+                              deletedFile(
+                                indexForm,
+                                indexFile,
+                                evidenciaData.file.name
+                              )
+                            "
+                            mat-icon-button
+                            placement="top"
+                            ngbTooltip="Elimina un pdf, world, excel,zip."
+                            color="warn"
+                            aria-label="Example icon button with a home icon"
+                          >
+                            <mat-icon style="color: rgb(245, 8, 8)"
+                              >delete</mat-icon
+                            >
+                          </div>
+                        </div>
+                      </mat-list-item>
+                    </mat-list>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="my-3"
+                    mat-raised-button
+                    (click)="inputFile.click()"
+                    placement="top"
+                    ngbTooltip="Adjuntar archivos PDF,zip,rar,tar, doc, docx, xlsx, xlsm"
+                  >
+                    Cargar Informes
+                  </button>
+
+                  <input
+                    #inputFile
+                    type="file"
+                   size="102400000"
+                    multiple
+                    hidden
+                    (change)="selectFiles(inputFile.files, indexForm, false)"
+                  />
+                  <p>Considero que he cumplido con esta obligación :</p>
+                  <br />
+                  <!-- <td class="sym_td_copied" to_copy="✔">Total: ✔</td>
+                    <p>Parcial:<p> -->
+
+                  <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="inlineCheckbox2"
+                      >Parcial </label
+                    >&nbsp;
+                    <input
+                      [checked]="comoTermina === 'P'"
+                      type="checkbox"
+                      (change)="comoTermina = 'P'"
+                    /><br />
+                    <div *ngIf="comoTermina === 'P'">
+                      <input
+                        formControlName="viMotivoParcial"
+                        matInput
+                        class="form-control"
+                        type="text"
+                        max="15"
+                        placeholder="Descripción de una obligación parcial."
+                      />
+                    </div>
+                  </div>
+                  <div class="check-inline-form">
+                    <label class="form-check-label" for="inlineCheckbox2"
+                      >Total &nbsp;</label
+                    >
+                    <input
+                      [checked]="comoTermina === 'T'"
+                      type="checkbox"
+                      (change)="comoTermina = 'T'"
+                    /><br />
+                  </div>
+                  <div
+                    fxLayout="column"
+                    fxLayout.gt-md="row"
+                    fxLayoutGap="8px"
+                    fxLayoutAlign="end center"
+                  >
+                    <button mat-raised-button color="primary" type="submit">
+                      GUARDAR
+                    </button>
+                    <button mat-raised-button color="warn" type="reset">
+                      LIMPIAR
+                    </button>
+                  </div>
+                </form>
+              </mat-expansion-panel>
+              <div
+                mat-icon-button
+                color="warn"
+                (click)="deleteFormObligacion(indexForm)"
+                placement="top"
+                ngbTooltip="Eliminar obligación"
+              >
+                <mat-icon style="color: rgb(245, 8, 8)">delete</mat-icon>
+              </div>
+            </div>
+          </mat-accordion>
+        </ng-container>
+      </div>
+      
+    </div>
+    
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button
+      matStepperPrevious
+      (click)="atrasPrimero()"
+      type="button"
+      class="offset"
+    >
+      Regresar
+    </button>
+    <button type="button" class="offset" (click)="siguientePrimero()">
+      Siguiente
+    </button>
+  </mat-card-actions>
+</mat-card>

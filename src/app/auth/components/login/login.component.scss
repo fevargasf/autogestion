@@ -1,0 +1,45 @@
+.login {
+  margin-top: 80px;
+}
+
+input {
+  border: 1px solid #0e9d51;
+}
+
+button {
+  background-color: #0e9d51;
+  border-radius: 5px !important;
+}
+
+button:hover {
+  background-color: #0d6f01;
+}
+
+label {
+  font-size: 20px;
+}
+
+.input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+  margin-left: 31px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.titulo-ingresar {
+  text-align: center;
+}
+
+.secuencia {
+  margin-top: 70px;
+}
+
+.spinner-border {
+  text-align: center;
+  margin: 10px auto;
+  margin-left: 250px;
+  padding: 10px;
+}
+
+.info-spinner {
+  margin: 4px 180px 14px;
+}

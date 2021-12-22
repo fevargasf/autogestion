@@ -1,0 +1,38 @@
+.btns {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+
+}
+
+.green {
+  color: #337ab7;
+}
+.search-expedient{
+  margin: 2px 5px 6px 110px;
+}
+select {
+  word-wrap: normal;
+  padding: 6px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.modal-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid #dee2e6;
+  border-top-left-radius: calc(.3rem - 1px);
+  /* border-top-right-radius: calc(.3rem - 1px); */
+  margin: 15px 10px 10px 150px;
+  z-index: 0;
+}
+
+.modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  padding: 1rem;
+  margin: 2px 150px 1px 100px;
+}

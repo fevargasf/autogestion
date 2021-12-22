@@ -1,0 +1,28 @@
+<div class="main-table">
+  
+  <h1>Resoluciones Otorgadas:</h1>
+  <table class="table table-resoluciones">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Radicado resolución y/o acto administrativo</th>
+      <th>Fecha</th>
+      <th>Descripción</th>
+  <!--     <th>Visualizar PDF</th> -->
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let resolucion of resoluciones; let i = index">
+      <td>{{i + 1}}</td>
+      <td (click)="seleccionarResolucion(resolucion)" style="cursor:pointer"><u><h3 id='color-underline-text'>{{resolucion.radicado}}</h3></u></td>
+      <td>{{resolucion.fecha | date: "dd-MM-YYYY"}}</td>
+      <td>{{resolucion.descriptor}}</td>
+      
+    </tr>
+
+    <div *ngIf="isLoading" class="spinner-border" role="status">
+      <span class="sr-only"></span>
+    </div>
+    </tbody>
+  </table>
+</div>

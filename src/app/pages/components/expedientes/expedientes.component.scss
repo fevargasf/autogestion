@@ -1,0 +1,674 @@
+
+@import url("https://fonts.googleapis.com/css?family=Lato:400,100,300,700,100italic,300italic,400italic,700italic,900,900italic");
+@import url("https://fonts.googleapis.com/css?family=Raleway:400,700");
+
+ 
+ .btn-bg.Pokemon .btn-group .ball button {
+  border: 2px solid #50514f;
+  border-radius: 5px;
+  background: transparent;
+  overflow: hidden;
+  position: relative;
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover {
+  border-color: #ffd740;
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover .pokemon-ball::before {
+  transform: translate3d(0, -100%, 0);
+  transition: transform 0.25s;
+  transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover .pokemon-ball::after {
+  transform: translate3d(0, 100%, 0);
+  transition: transform 0.25s;
+  transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover a {
+  transition: none;
+  color: transparent;
+  z-index: 999;
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover a::before {
+  transform: translate3d(100%, 0, 0);
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover a span:first-child::before,
+ .btn-bg.Pokemon .btn-group .ball button:hover a span:nth-child(2)::before {
+  transition-delay: 0.3s;
+  transform: translate3d(0, 0, 0);
+  transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+}
+ .btn-bg.Pokemon .btn-group .ball button .pokemon-ball {
+  position: absolute;
+  content: 'Go!';
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9;
+}
+ .btn-bg.Pokemon .btn-group .ball button .pokemon-ball::before,
+ .btn-bg.Pokemon .btn-group .ball button .pokemon-ball::after {
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: #ef594f;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.25s;
+  transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+}
+ .btn-bg.Pokemon .btn-group .ball button .pokemon-ball::after {
+  top: 50%;
+  background: #fff;
+}
+ .btn-bg.Pokemon .btn-group .ball button a {
+  color: #50514f;
+    font-weight: 1000;
+    font-size: 0.9em;
+    transition: color 0.5s 0.25s;
+    /* overflow: hidden; */
+    display: inline-block;
+    position: relative;
+    z-index: 999;
+    margin-left: 0px;
+    /* margin-right: -50px; */
+}
+ .btn-bg.Pokemon .btn-group .ball button a::before {
+  position: absolute;
+  content: '';
+  width: 100%;
+  height: 5px;
+ 
+  top: calc(50% - 2.5px);
+  transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+  transform: translate3d(-100%, 0, 0);
+}
+ .btn-bg.Pokemon .btn-group .ball button a span {
+   /* position: absolute; */
+   height: 100%;
+   /* width: 1800px; */
+   top: 0;
+   left: 0;
+   overflow: hidden;
+}
+ .btn-bg.Pokemon .btn-group .ball button a span::before {
+  position: absolute;
+  content: attr(data-letters);
+  left: 0;
+  width: 100%;
+  color: #fff;
+  transition: transform 0.5s;
+}
+ .btn-bg.Pokemon .btn-group .ball button a span:first-child::before {
+  top: 0;
+  color: #ef594f;
+  transform: translate3d(0, 100%, 0);
+}
+ .btn-bg.Pokemon .btn-group .ball button a span:nth-child(2) {
+  top: 50%;
+}
+ .btn-bg.Pokemon .btn-group .ball button a span:nth-child(2)::before {
+  bottom: 0;
+  transform: translate3d(0, -100%, 0);
+}
+.btn-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+}
+@media screen and (max-width: 480px) {
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+.btn {
+  margin: 0px  30px 30px 30px;
+  display: block;
+}
+.btn-info {
+  margin-bottom: 10px;
+  text-align: center;
+  font-family: 'Lato';
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-size: 3.5em;
+  color: #fff;
+}
+.btn-mention {
+  margin-bottom: 70px;
+  text-align: center;
+  font-family: 'Lato';
+  letter-spacing: 0.1em;
+  font-size: 1.1em;
+  color: #fff;
+}
+.btn-mention span {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+button {
+  cursor: pointer;
+  overflow: visible;
+  outline: none;
+  /* color: #fff; */
+  position: relative;
+  letter-spacing: 0.1em;
+  /* font-weight: 100; */
+  /* padding: 1rem 3rem 1rem 3rem; */
+  text-transform: uppercase;
+  font-family: "Lato";
+  /* font-size: 1em; */
+  width: 120px;
+  height: 50px;
+}
+button a {
+  text-decoration: none;
+}
+@-moz-keyframes wave {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.975);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+@-webkit-keyframes wave {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.975);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+@-o-keyframes wave {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.975);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+@keyframes wave {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.975);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+@-moz-keyframes smallwave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: rotate(180deg) scale(0.95);
+    opacity: 0.25;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.8;
+  }
+}
+@-webkit-keyframes smallwave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: rotate(180deg) scale(0.95);
+    opacity: 0.25;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.8;
+  }
+}
+@-o-keyframes smallwave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: rotate(180deg) scale(0.95);
+    opacity: 0.25;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.8;
+  }
+}
+@keyframes smallwave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: rotate(180deg) scale(0.95);
+    opacity: 0.25;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.8;
+  }
+}
+.primer-row {
+  margin-top: 60px;
+}
+
+.segundo-row {
+  margin-top: 50px;
+}
+
+.button-group {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 2.5em;
+  width: 30%;
+  margin: 0px auto;
+  margin-top: 15px;
+}
+
+.inpp[_ngcontent-rqr-c234] input[_ngcontent-rqr-c234] {
+  margin-top: 4px;
+  margin-left: 4px;
+  
+}
+
+
+
+.inpp input {
+  margin-top: 4px;
+  margin-left: 4px;
+  height: 15px;
+  width: 18px;
+  cursor: pointer;
+}
+
+.inpp p {
+  margin-left: 8px;
+}
+
+.primero {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 80px;
+}
+
+.primero button {
+  height: 55px;
+  margin: 30px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.inputs-radio {
+  text-align: center;
+}
+
+.inputs-radio div {
+  text-align: center;
+  font-size: 1.3rem;
+  padding: 10px;
+  display: inline-block;
+}
+
+.inputs-radio input {
+  margin-left: 5px;
+}
+
+:disabled {
+  cursor: not-allowed;
+}
+#center-ancla{
+  margin-left: 100px;
+  margin-top: 30px;
+  text-align: center;
+  font-style:italic;
+  font-size: larger;
+
+}
+form label{
+	width:200px;
+  margin-top: 8px;
+  font-size: larger;
+	
+}
+
+#center-input-direcction{
+  width: 1300px;
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+#center-input-expident{
+  margin-top: 50px;
+}
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+  width: 100%;
+  padding-right: var(--bs-gutter-x,.75rem);
+  padding-left: var(--bs-gutter-x,.75rem);
+  margin-right: 60px;
+  margin-left: 60px;
+}
+.tercero-row{
+  margin-top: 55px;
+  padding: 5px;
+}
+.anc-decorate a{
+  text-decoration: none;
+}
+.primer-formulario-expediente{
+  margin-right: 200px;
+  margin-left: 200px;
+}
+.mat-card{
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  margin-top: 15px;
+}
+.mat-card>:last-child:not(.mat-card-footer), .mat-card-content>:last-child:not(.mat-card-footer) {
+
+  margin-bottom: 0;
+  margin-top: 10px;
+  margin-left: 80px;
+  margin-right: 80px;
+}
+// Botón con mensaje
+ .btn-bg.Pokemon .btn-group .ball button {
+  border: 2px solid #50514f;
+  border-radius: 5px;
+  background: transparent;
+  overflow: hidden;
+  position: relative;
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover {
+  border-color: #ffd740;
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover .pokemon-ball::before {
+  transform: translate3d(0, -100%, 0);
+  transition: transform 0.25s;
+  transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover .pokemon-ball::after {
+  transform: translate3d(0, 100%, 0);
+  transition: transform 0.25s;
+  transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover a {
+  transition: none;
+  color: transparent;
+  z-index: 999;
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover a::before {
+  transform: translate3d(100%, 0, 0);
+}
+ .btn-bg.Pokemon .btn-group .ball button:hover a span:first-child::before,
+ .btn-bg.Pokemon .btn-group .ball button:hover a span:nth-child(2)::before {
+  transition-delay: 0.3s;
+  transform: translate3d(0, 0, 0);
+  transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+}
+ .btn-bg.Pokemon .btn-group .ball button .pokemon-ball {
+  position: absolute;
+  content: 'Go!';
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9;
+}
+ .btn-bg.Pokemon .btn-group .ball button .pokemon-ball::before,
+ .btn-bg.Pokemon .btn-group .ball button .pokemon-ball::after {
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: rgb(0, 155, 221);
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.25s;
+  transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+}
+ .btn-bg.Pokemon .btn-group .ball button .pokemon-ball::after {
+  top: 50%;
+  background: rgb(230, 241, 3);
+}
+ .btn-bg.Pokemon .btn-group .ball button a {
+  color: #fbfdfa;
+    font-weight: 1000;
+    font-size: 0.9em;
+    transition: color 0.5s 0.25s;
+    /* overflow: hidden; */
+    display: inline-block;
+    position: relative;
+    z-index: 999;
+    margin-left: 12px;
+    margin-bottom: 23px;
+}
+ .btn-bg.Pokemon .btn-group .ball button a::before {
+  position: absolute;
+  content: '';
+  width: 100%;
+  height: 5px;
+  //background: #50514f;
+  top: calc(50% - 2.5px);
+  transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+  transform: translate3d(-100%, 0, 0);
+}
+ .btn-bg.Pokemon .btn-group .ball button a span {
+   /* position: absolute; */
+   height: 100%;
+   /* width: 1800px; */
+   top: 0;
+   left: 0;
+   overflow: hidden;
+}
+ .btn-bg.Pokemon .btn-group .ball button a span::before {
+  position: absolute;
+  content: attr(data-letters);
+  left: 0;
+  width: 100%;
+  color: #fff;
+  transition: transform 0.5s;
+}
+ .btn-bg.Pokemon .btn-group .ball button a span:first-child::before {
+  top: 0;
+  color: #faf6f6;
+  transform: translate3d(0, 100%, 0);
+}
+ .btn-bg.Pokemon .btn-group .ball button a span:nth-child(2) {
+  top: 50%;
+}
+ .btn-bg.Pokemon .btn-group .ball button a span:nth-child(2)::before {
+  bottom: 0;
+  transform: translate3d(0, -100%, 0);
+}
+.btn-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+}
+@media screen and (max-width: 480px) {
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+.btn {
+  margin: 0px 30px 30px 30px;
+  display: block;
+}
+.btn-info {
+  margin-bottom: 10px;
+  text-align: center;
+  font-family: 'Lato';
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-size: 3.5em;
+  color: #fff;
+}
+.btn-mention {
+  margin-bottom: 70px;
+  text-align: center;
+  font-family: 'Lato';
+  letter-spacing: 0.1em;
+  font-size: 1.1em;
+  color: #fff;
+}
+.btn-mention span {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+button {
+  cursor: pointer;
+  overflow: visible;
+  outline: none;
+  /* color: #fff; */
+  position: relative;
+  letter-spacing: 0.1em;
+  /* font-weight: 100; */
+  /* padding: 1rem 3rem 1rem 3rem; */
+  text-transform: uppercase;
+  font-family: "Lato";
+  /* font-size: 1em; */
+  width: 120px;
+  height: 50px;
+}
+button a {
+  text-decoration: none;
+}
+@-moz-keyframes wave {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.975);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+@-webkit-keyframes wave {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.975);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+@-o-keyframes wave {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.975);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+@keyframes wave {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.975);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+@-moz-keyframes smallwave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: rotate(180deg) scale(0.95);
+    opacity: 0.25;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.8;
+  }
+}
+@-webkit-keyframes smallwave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: rotate(180deg) scale(0.95);
+    opacity: 0.25;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.8;
+  }
+}
+@-o-keyframes smallwave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: rotate(180deg) scale(0.95);
+    opacity: 0.25;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.8;
+  }
+}
+@keyframes smallwave {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: rotate(180deg) scale(0.95);
+    opacity: 0.25;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.8;
+  }
+}
+
+.my-custom-class .tooltip-inner {
+  background-color: darkgreen;
+  font-size: 125%;
+}
+.my-custom-class .arrow::before {
+  border-top-color: darkgreen;
+}

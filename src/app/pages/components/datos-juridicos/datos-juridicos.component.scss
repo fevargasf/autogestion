@@ -1,0 +1,22 @@
+.title {
+  font-size: 1.7rem;
+}
+
+.btn-groupp {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+}
+
+:disabled {
+  cursor: not-allowed;
+}
+
+.atras2 {
+  background-color: #ffed00;
+  color: #000
+}
+
+.btn-groupp button {
+  width: 234px;
+}

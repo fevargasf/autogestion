@@ -1,0 +1,49 @@
+.main-stepper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  align-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 15px;
+
+}
+
+.stepper {
+  width: 100%;
+  height: 80%;
+  flex-direction: column-reverse;
+}
+
+.mat-stepper-horizontal {
+  margin-top: 0px;
+  width: 1470px;
+  opacity: 0.9;
+}
+
+::ng-deep {
+  .mat-step-icon {
+    height: 85px !important;
+    width: 85px !important;
+    margin-top: 80px;
+    margin-bottom: 50px;
+    -ms-transform: skewY(20deg); /* IE 9 */
+    transform: skewY(20deg);
+    width: 3px; height: 3px;
+  background-image: url("https://image.freepik.com/vector-gratis/hoja-arbol-aliso-realista-colores-cambiantes-otono_88211-1146.jpg"); /* La imagen y su ruta */
+  background-size: cover; /* Usamos cover para que nuestra imagen no se deforme al adaptarse a cada pantalla */
+  background-position: center; /* Para centrar la imagen horizontal y verticalmente en el contenedor */
+  background-repeat: no-repeat; /* Para que no repita la imagen */
+  }
+
+  .mat-step-icon-selected {
+    background-color: #007bff !important;
+  }
+
+  .mat-step-icon-state-done {
+    background-color: #007bff !important;
+  }
+
+  .mat-step-header {
+    pointer-events: none !important;
+  }
+}

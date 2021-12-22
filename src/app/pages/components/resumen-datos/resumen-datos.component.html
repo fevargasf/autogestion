@@ -1,0 +1,28 @@
+<!-- los pdf cargados hasta el momento -->
+<br />
+<br />
+<br />
+<div class="letter-text-resoluction">
+  <h2>
+    <b>Paso 3:</b> En esta sección verificará la información que proporciona
+    como evidencia de cumplimiento y generará la radicación para finalizar el proceso de Autogestión.
+  </h2>
+  <!-- <a [href]="pdfUrl" download="Documento.pdf">DownloadFile</a>  -->
+</div>
+<div class="col-md-12">
+  <div class="btn-left">
+   <!--  <button matStepperPrevious (click)="atrasSegundo()" type="button"class="btn btn-primary">Regresar</button> -->
+  </div>
+  
+  <div class="buttons">
+    <button matStepperPrevious (click)="atrasSegundo()" type="button" class="offset">Regresar</button>
+      <!-- <button class="offset"> <a [href]="pdfUrl" download="Documento.pdf">Descargar Evidencia</a> </button> -->
+    <button type="button" class="offset">
+      <span (click)="siguienteTercero()" class="left title">Radicar Documento</span>
+    </button>
+  </div>
+  <ng-container *ngIf="pdfUrl">
+  
+    <app-output-document [pdfSrc]="pdfUrl"></app-output-document>
+  </ng-container>
+</div>

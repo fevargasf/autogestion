@@ -1,0 +1,87 @@
+.full {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-top: 60px;
+
+}
+
+.main-card {
+  display: flex;
+  justify-items: flex-start;
+  align-items: center;
+}
+
+.card1 {
+  height: 300px;
+  width: 600px;
+  padding: 10px;
+  margin: 10px;
+}
+
+.card2 {
+  height: 300px;
+  width: 600px;
+  padding: 10px;
+  margin: 30px;
+}
+
+.from-group1 h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.from-group2 h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.from-group1 img {
+  height: 300px;
+  width: 570px;
+  margin: 0px;
+  padding: 0px;
+  border-radius: 5px;
+}
+
+.from-group2 img {
+  height: 300px;
+  width: 570px;
+  margin: 0px;
+  padding: 0px;
+  border-radius: 5px;
+}
+
+
+.main-card:hover .card1 {
+  opacity: 0.3;
+  margin: 30px;
+}
+
+.main-card:hover .card2 {
+  opacity: 0.3;
+  margin: 30px;
+}
+
+.main-card:hover .card1:hover {
+  transform: scale(1.2);
+  opacity: 1;
+}
+
+.main-card:hover .card2:hover {
+  transform: scale(1.2);
+  opacity: 1;
+}
+
+.estado {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-top: 80px;
+}

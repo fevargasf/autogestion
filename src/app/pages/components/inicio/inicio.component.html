@@ -1,0 +1,34 @@
+<div class="main-stepper">
+  <div class="row">
+    <mat-horizontal-stepper [selectedIndex]="selectedIndex" [linear]="'false'" #stepper class="stepper">
+      <mat-step [editable]="isEditableInicio" [completed]="completoInicio">
+     
+          <ng-template matStepLabel>Resolución</ng-template>
+          <app-select-resolucion (seleccionResolucion)="seleccionResolucion($event)"></app-select-resolucion>
+      </mat-step>
+      
+      <mat-step [editable]="isEditable1" [completed]="completo1">
+        <form>
+          <ng-template matStepLabel>Adjuntar evidencia</ng-template>
+          <app-adjuntar *ngIf="isEditable1" (atrasPrimeroOut)="atrasPrimero($event)"
+                        (siguientePrimeroOut)="siguientePrimero($event)"
+                        [resolucionInput]="resolucion"></app-adjuntar>
+        </form>
+      </mat-step>
+     
+      <mat-step [editable]="isEditable2" [completed]="completo2">
+        <form>
+          <ng-template matStepLabel>Estado del proceso de Autogestión</ng-template>
+          <app-resumen-datos  (atrasSegundoOut)="atrasSegundo($event)"
+                             (siguienteTerceroComp)="siguienteSegundo($event)" [events]="eventSubject.asObservable()"></app-resumen-datos>
+        </form>
+      </mat-step>
+     
+      <mat-step >
+          <ng-template matStepLabel>Documento Radicado</ng-template>
+          <app-document-radicado *ngIf="completo3" [radicado]="radicado" 
+          (siguientePrimeroOut)="siguienteConfirmacion($event)"></app-document-radicado>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </div>
+</div>

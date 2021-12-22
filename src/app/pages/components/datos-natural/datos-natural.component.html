@@ -1,0 +1,71 @@
+<div class="container mt-3">
+  <div class="row">
+    <h2 class="text-center title">Datos de persona natural:</h2>
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" disabled [(ngModel)]='nombre'>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" disabled [(ngModel)]="email2">
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3">
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="telefono fijo">Teléfono fijo</label>
+            <input type="number" class="form-control" disabled [(ngModel)]="tel">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="celular">Celular</label>
+            <input type="text" class="form-control" disabled [(ngModel)]="cel">
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="departamento">Departamento</label>
+            <input type="text" class="form-control" disabled [(ngModel)]="dep">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="municipio">Municipio</label>
+            <input type="text" class="form-control" disabled [(ngModel)]="mun">
+          </div>
+        </div>
+
+      </div>
+      <div class="row mt-3">
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="expediente">Expediente</label>
+            <input type="text" class="form-control" disabled [(ngModel)]="codigo">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+
+            <label for="fecha diligenciamiento">Fecha diligenciamiento</label>
+            <input type="text" class="form-control" disabled [value]=" fechaActual | date:'dd/MM/YYYY'">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-groupp mt-5">
+  <button class="btn btn-primary atras2 form-control" matStepperPrevious (click)="atrasSegundo()">Atras</button> 
+    <button class="btn btn-success form-control" (click)="siguienteSegundo()">Siguiente</button>
+  </div>
+</div>
