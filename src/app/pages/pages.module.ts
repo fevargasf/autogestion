@@ -68,7 +68,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
     NgbModule,
     CoreModule,
     FlexLayoutModule,
-    MatNativeDateModule
+    
   ]
 })
 export class PagesModule {

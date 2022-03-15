@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public isLoading = true;
   public horizontalPosition: MatSnackBarHorizontalPosition = 'start';
   public verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-
+  public loading = false;
   constructor(
     private cookieService: CookieService,
     private route: ActivatedRoute,
@@ -31,12 +31,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-      // this.cargarDatosIniciales();
-     this.getDataLocalStorage();
+       this.cargarDatosIniciales();
+     //this.getDataLocalStorage();
   }
 
   public getDataLocalStorage(): void {
     const sec = JSON.parse(localStorage.getItem('sec'));
+    this.loading = true;
+
     this.expedienteService
       .getListaExpedientes(sec.sequenceThirdParty)
       .subscribe((datas) => {
@@ -45,29 +47,12 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.nombreUsuario = value.ter_nombres;
              console.log(value.ter_nombres)
             this.openSnackBar(this.nombreUsuario);
+           
 
           });
 
-          Swal.fire({
-            title: '<strong>Política de Protección de Datos</strong>',
-            width: 600,
-            customClass: {
-              container: 'swal2-container-position'
-            },
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Aceptar',
-            html:
-              '<br>' +
-              'Corantioquia está comprometida con el tratamiento leal, lícito, confidencial y seguro de sus datos personales. Por favor consulte nuestra Política de Tratamiento de datos personales en nuestra página web: ' +
-              '<a target="_blank" href="https://www.corantioquia.gov.co/">corantioquia.gov.co</a> ' +
-              ' en donde puede conocer sus derechos constitucionales y legales así como la forma de ejercerlos. Con mucho gusto atenderemos todas sus observaciones, consultas o reclamos en: <a  target="_blank" href="">protecciondedatos@corantioquia.gov.co</a>',
-            showClass: {
-              popup: 'animate__animated animate__fadeInDown',
-            },
-            hideClass: {
-              popup: 'animate__animated animate__fadeOutUp',
-            },
-          }); 
+        
+          this.loading = false;
         } else {
           this.snackBar.dismiss();
               //Borrar variable cookie
@@ -95,8 +80,28 @@ export class HomeComponent implements OnInit, OnDestroy {
         horizontalPosition: this.horizontalPosition,
         verticalPosition: this.verticalPosition,
       });
-      this.isLoading = false;
+     
     }
+    Swal.fire({
+      title: '<strong>Política de Protección de Datos</strong>',
+      width: 600,
+      customClass: {
+        container: 'swal2-container-position'
+      },
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Aceptar',
+      html:
+        '<br>' +
+        'Corantioquia está comprometida con el tratamiento leal, lícito, confidencial y seguro de sus datos personales. Por favor consulte nuestra Política de Tratamiento de datos personales en nuestra página web: ' +
+        '<a target="_blank" href="https://www.corantioquia.gov.co/">corantioquia.gov.co</a> ' +
+        ' en donde puede conocer sus derechos constitucionales y legales así como la forma de ejercerlos. Con mucho gusto atenderemos todas sus observaciones, consultas o reclamos en: <a  target="_blank" href="">protecciondedatos@corantioquia.gov.co</a>',
+      showClass: {
+        popup: 'animate__animated animate__fadeInDown',
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOutUp',
+      },
+    });
   }
 
   ngOnDestroy(): void {

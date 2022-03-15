@@ -3,9 +3,12 @@
   <div class="row">
     <div class="col-md-12">
       <mat-card class="mat-card-confirmacion-envio">
-        <p>¡Se ha enviado con éxito a nuestros registros!</p>
-        <p>Muchas gracias por tu gestión. Se ha enviado con éxito los documentos con radicado <b>{{radicado?.radicado}}</b> . Te
-          recomendamos estar pendiente del correo electronico registrado para podernos comunicar contigo.</p>
+        <p class="centrado">
+        <img  width="300" height="300"  src="./assets/img/gracias.png" alt="gracias" srcset="">
+      </p>
+        <p> 🎉¡Se ha enviado con éxito a nuestros registros! Tu radicado <b>{{radicado?.radicado}}</b> . Te
+          recomendamos estar pendiente del correo electrónico registrado para podernos comunicar contigo.</p>
+          
       </mat-card>
     </div>
   </div>
@@ -19,6 +22,6 @@
   </div>
 <div class="button-group">
   <button class="offset" routerLink="/">Gestionar otra autegestión</button>
-  <button class="offset" src="https://sirena.corantioquia.gov.co/lago/CtrlIniciarApp">Salir</button>
+  <button class="offset" src="https://sirena.corantioquia.gov.co/lago/CtrlIniciarApp?appCod=TRAMITE&urlRetorno=(https%3A%2F%2Fsirena.corantioquia.gov.co%2Fesirena%2FCtrlIndex)">Salir</button>
     
 </div>

@@ -28,7 +28,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }  */
 
-    window.location.href = "https://pruebas.corantioquia.gov.co/";
+//window.location.href = "https://sirena.corantioquia.gov.co/";
     return false;
 
   }

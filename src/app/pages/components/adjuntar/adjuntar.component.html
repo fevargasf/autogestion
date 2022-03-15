@@ -1,29 +1,18 @@
-<br />
-<br />
-<br />
-<div class="letter-text-resoluction">
-  <h2>
-    <b>Paso 2:</b> En esta sección agregará las obligaciones para realizar la
-    autogestión en este módulo, por favor, revíselas y una a una describa el
-    cumplimiento de cada obligación.
-  </h2>
-</div>
-
-<br />
-<br />
-<div>
-  <h1>{{ "Expediente :" + expediente }}</h1>
-</div>
 
 <mat-card class="mat-elevation-z10">
+  <h2>
+    <b>Paso 2:</b> Esta es la resolución {{resolucionInput.radicado}} del expediente {{  expediente }} a la cuál adjuntara la evidencia para realizar la
+    autogestión.
+  </h2>
   <mat-card-header>
-    <mat-card-title>{{
-      "La resolución " +
-        resolucionInput.radicado +
-        " a la cual esta realizando la correspondiente autogestión"
-    }}</mat-card-title>
+        <!--recorrido css -->
+        <div class="svg-wrapper">
+          <div id="text">
+            <a (click)="startSteps()"><span class="spot"></span>AYUDA 👋</a>
+          </div>
+  
+        </div>
   </mat-card-header>
-
   <mat-card-content fxLayout="row" fxLayoutGap="8px">
     <div fxFlex>
       <iframe
@@ -32,14 +21,13 @@
         [src]="resolucionInput.link_descarga | domSeguro" title="Ver PDF"
         >Ver PDF</iframe
       >
-    </div>
-    <!--  <div fxFlex>
-        <iframe height="100%" width="100%" [src]="resolucionInput.link_descarga | domSeguro" title="Ver PDF">Ver
-          PDF</iframe>
-      </div> -->
+     <!--  [src]="resolucionInput.link_descarga | domSeguro" title="Ver PDF"
+        src="https://pruebas.corantioquia.gov.co/esirena/CtrlDocunet?ctrlAction=C&doAction=D&idDocunet=3097216&idDescarga=2812233097216781699...............juan"
+    -->
+    </div>   
     <div fxFlex fxLayout="column">
       <div class="letter-add">
-        <h2>Añadir más obligaciones.</h2>
+        <h2  >Añadir más obligaciones.</h2>
       </div>
       <div
         class="letter-icon"
@@ -50,9 +38,9 @@
         placement="top"
         ngbTooltip="Crea un nuevo formulario!"
       >
-        <mat-icon style="color: rgb(245, 209, 8)">add_circle</mat-icon>
+        <mat-icon id="step1-li" style="color: rgb(245, 209, 8)">add_circle</mat-icon>
       </div>
-      <div [formGroup]="formObligaciones">
+      <div  [formGroup]="formObligaciones">
         <ng-container formArrayName="obligaciones">
           <mat-accordion multi #matAccordion>
             <div
@@ -61,7 +49,7 @@
                 let indexForm = index
               "
             >
-              <mat-expansion-panel fxFlex>
+              <mat-expansion-panel hideToggle [expanded]="true"  fxFlex>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     Obligaci&oacute;n:
@@ -77,14 +65,15 @@
                   [formGroupName]="indexForm"
                   (ngSubmit)="saveObligation(indexForm)"
                 >
-                  <input type="hidden" formControlName="line" />
+                  <input  type="hidden" formControlName="line" />
                   <mat-form-field fxFlex appearance="outline">
                     <mat-label>Nombre de la Obligaci&oacute;n:</mat-label>
-                    <input matInput type="text" formControlName="descripcion" />
+                    <input  id="step2-li" matInput type="text" formControlName="descripcion" />
                   </mat-form-field>
                   <mat-form-field fxFlex appearance="outline">
                     <mat-label>Observaciones:</mat-label>
                     <input
+                      id="step3-li"
                       matInput
                       type="text"
                       formControlName="observaciones"
@@ -95,11 +84,9 @@
                   <mat-card fxFlex>
                     <mat-card-header>
                       <mat-card-subtitle>
-                        <span
-                          >AQUÍ! cargar solo Imagenes/Fotos de evidencia con
-                          Coordenadas y fecha.</span
-                        >
-                        <input
+                        <span >Cargar solo Imagenes/Fotos de evidencia con
+                          Coordenadas y fecha.</span><a href="https://geografico.corantioquia.gov.co/mapgis/mapa.jsp?aplicacion=1" target="_blank" rel="noopener noreferrer">Verificar Coordenadas</a>
+                        <input 
                           #inputFileEvidencia
                           accept="image/*"
                           type="file"
@@ -113,7 +100,8 @@
                             )
                           "
                         />
-                        <div
+                        <div 
+                          id="step4-li"
                           mat-icon-button
                           color="primay"
                           type="button"
@@ -263,6 +251,7 @@
                   </div>
 
                   <button
+                    id="step5-li"
                     type="button"
                     class="my-3"
                     mat-raised-button
@@ -281,12 +270,9 @@
                     hidden
                     (change)="selectFiles(inputFile.files, indexForm, false)"
                   />
-                  <p>Considero que he cumplido con esta obligación :</p>
+                  <p id="step6-li">Considero que he cumplido con esta obligación :</p>
                   <br />
-                  <!-- <td class="sym_td_copied" to_copy="✔">Total: ✔</td>
-                    <p>Parcial:<p> -->
-
-                  <div class="form-check form-check-inline">
+                  <div id="step6-li" class="form-check form-check-inline">
                     <label class="form-check-label" for="inlineCheckbox2"
                       >Parcial </label
                     >&nbsp;

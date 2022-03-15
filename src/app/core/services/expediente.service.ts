@@ -47,10 +47,18 @@ export class ExpedienteService {
   public dataArchivoObservable$ = this.dataArchivoSubject$.asObservable();
   private radicadoSubject$ = new Subject<any>();
   public radicadoObservable$ = this.radicadoSubject$.asObservable();
-
   readonly BASE_URL = environment.API_EXPEDIENTE;
-
   constructor(private httpClient: HttpClient) {}
+
+  isLoading$=new Subject<boolean>();
+  show():void {
+    this.isLoading$.next(true);
+  }
+
+  hide():void{
+    this.isLoading$.next(false);
+  }
+
 
   public getListaExpedientes(
     sequenceThirdParty: string
@@ -67,9 +75,6 @@ export class ExpedienteService {
       }
     );
   }
-
-
-
   public postObtenerResolucion(value: string): Observable<any> {
     let params = new HttpParams().append('sequenceThirdParty2', value);
     return this.httpClient.post<any>(
@@ -80,22 +85,11 @@ export class ExpedienteService {
       }
     );
   }
-
-
   public postGuardarObligacion(data): Observable<GuardarObligacionResponse> {
     return this.httpClient.post<GuardarObligacionResponse>(
       `${this.BASE_URL}obligations/guardar-obligacion`,
       data
     )}
-
-/*   public postObtenerResolucion(sequenceThirdParty2): Observable<any> {
-    return this.httpClient.post(
-      `${this.BASE_URL}resolutions?sequenceThirdParty2=${sequenceThirdParty2.sequenceThirdParty2}`,
-      {}
-
-    );
-  } */
-
   public postGuardarArchivo(data): Observable<string> {
     return this.httpClient.post<string>(
       `${this.BASE_URL}listar-archivos/guardar-archivo`,

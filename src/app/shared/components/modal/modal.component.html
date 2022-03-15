@@ -11,9 +11,16 @@
   <div class="modal-body">
     <select name="" id="" class="form-control" #expedientes (change)="optenerExpediente(expedientes.value)"  placement="left" ngbTooltip="Escoge el expediente al cual realizaras la autogestión" tooltipClass="my-custom-class"> 
       <option value="">Seleccione un expediente</option>
-      <option *ngFor="let lista of listaExpedientes" [value]="lista.expediente">{{lista.expediente}}
-        - {{lista.nombre_asunto}} - {{lista.exp_estado}}</option>
+      <thead>
+        <tr>
+         <th *ngFor="let column of displayedColumns" (click)= "sortByCol(column)">{{column}}</th>
+        </tr>
+     </thead>
+      <option *ngFor="let lista of listaExpedientes | pipeOrder:'nombre_asunto' " [value]="lista.expediente">{{lista.expediente}}
+        - {{lista.nombre_asunto }} - {{lista.exp_estado}}</option>
+        
     </select>
+  
   </div>
   <div class="footer-body">
     <div class="row">

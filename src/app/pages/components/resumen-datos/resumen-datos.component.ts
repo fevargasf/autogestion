@@ -196,7 +196,7 @@ export class ResumenDatosComponent implements OnInit {
     const sec = JSON.parse(localStorage.getItem('sec'));
     const expediente = JSON.parse(localStorage.getItem('expediente'));
     const expedienteActual = JSON.parse(sessionStorage.getItem('expedienteActual'));
-    this.pdfUrl =`http://localhost:5000/api/self-management/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`;
+    this.pdfUrl =`https://sirena.corantioquia.gov.co/autogestion/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`;
     this.isLoading=true;
     
     let data = {

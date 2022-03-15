@@ -7,17 +7,18 @@ import {LayoutComponent} from './layout/layout.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {SharedModule} from './shared/shared.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import { AuthGuard } from './core/services/auth.guard';
-import { DocumentRadicadoComponent } from './pages/components/document/document-radicado.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { MyErrorHandler } from './_helpers/MyErrorHandler';
 import { NotifierModule } from 'angular-notifier';
 import { Notifier } from './util/notifier';
+import { SpinnerModule } from './shared/spinner/spinner.module';
+import {SpinnerInterceptor} from './../app/shared/spinner.interceptor'
 
+   
 
 @NgModule({
   declarations: [
@@ -35,12 +36,16 @@ import { Notifier } from './util/notifier';
     BrowserAnimationsModule,
     HttpClientModule,
     FontAwesomeModule,
-    NotifierModule
+    NotifierModule,
+    SpinnerModule
+  
   ],
   providers: [
     AuthGuard,
     {provide:ErrorHandler, useClass: MyErrorHandler},
-    {provide:LocationStrategy, useClass:HashLocationStrategy}
+    {provide:LocationStrategy, useClass:HashLocationStrategy},   
+     {provide:HTTP_INTERCEPTORS, useClass:SpinnerInterceptor, multi: true}
+
   ],
   bootstrap: [AppComponent]
 })

@@ -130,7 +130,7 @@ export class OutputPdfComponent implements OnInit {
   generatePDF(): void {
     const sec = JSON.parse(localStorage.getItem('sec'));
     const expediente = JSON.parse(localStorage.getItem('expediente'));
-    this.pdfSrc =`https://pruebas.corantioquia.gov.co/autogestion/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`
+    this.pdfSrc =`https://sirena.corantioquia.gov.co/autogestion/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`
     // All the contents required goes here
     this.documentDefinition = {
       info: {

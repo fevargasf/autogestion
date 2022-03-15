@@ -113,8 +113,6 @@ export class InicioComponent implements OnInit {
             this.expedienteService.postObtenerResolucion(newResolucion.sequenceThirdParty2).subscribe((dataRe) => {
                 if (dataRe.result){
                   this.resoluciones = dataRe.consulta_resolucion;
-                  this.isLoading = false;
-                  // tslint:disable-next-line:radix
                   this.expedienteService.getConsultarObligacion$( sequenceThirdParty);
                 }
             });

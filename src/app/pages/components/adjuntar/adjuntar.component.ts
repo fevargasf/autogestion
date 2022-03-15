@@ -1,5 +1,13 @@
-
-import {Component,ComponentFactoryResolver, ElementRef,EventEmitter,Input, OnInit,Output, ViewChild,} from '@angular/core';
+import {
+  Component,
+  ComponentFactoryResolver,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute } from '@angular/router';
@@ -8,16 +16,8 @@ import { Archivos } from 'src/app/pages/components/interfaces/archivos';
 import { ListasExpe } from 'src/app/pages/components/interfaces/lista-expe';
 import { Obligaciones } from 'src/app/pages/components/interfaces/obligaciones.interface';
 import { Resolucion } from 'src/app/pages/components/interfaces/resolucion.interface';
+import introJs from 'intro.js/intro.js';
 
-/* import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatStepper} from '@angular/material/stepper';
-import {ActivatedRoute} from '@angular/router';
-import {ExpedienteService} from 'src/app/core/services/expediente.service';
-import {Archivos} from 'src/app/interfaces/archivos';
-import {ListaExpedientes} from 'src/app/interfaces/lista_expedientes.interface';
-import {Obligaciones} from 'src/app/interfaces/obligaciones.interface';
-import {Resolucion} from 'src/app/interfaces/resolucion.interface'; */
 import Swal from 'sweetalert2';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { GuardarObligacionResponse } from 'src/app/pages/components/interfaces/guardar-obligacion-response';
@@ -47,7 +47,6 @@ import {
 } from '@angular/material/core';
 import { NotifierService } from 'angular-notifier';
 import { HttpErrorResponse } from '@angular/common/http';
-
 
 export interface DataEvidencia {
   file?: File;
@@ -143,12 +142,13 @@ export class AdjuntarComponent implements OnInit {
 
   public listObligacionArchivo: ObligaArchivoDTO[] = [];
 
-  private maxFileSizeKB = 300000;
+  private maxFileSizeMB = 120;
+  private maxFileSizeGB = 2;
 
   @ViewChild(MatAccordion, { static: false }) matAccordion: MatAccordion;
 
   comoTermina: 'P' | 'T' = 'T';
-
+  introJS = introJs();
   constructor(
     private activeRoute: ActivatedRoute,
     private expedienteService: ExpedienteService,
@@ -158,15 +158,56 @@ export class AdjuntarComponent implements OnInit {
     private notifierService: NotifierService
   ) {
     this.formObligaciones = this.fb.group({
-      obligaciones: this.fb.array([this.createFormGroup()])
-  
+      obligaciones: this.fb.array([this.createFormGroup()]),
     });
     this.formAndFiles.push({ indexForm: 0, data: [] });
 
     this.loadObligationsAndFiles();
   }
+  startSteps(): void {
+    this.introJS
+      .setOptions({
+        nextLabel: 'Siguiente',
+        prevLabel: 'Atras',
+        doneLabel: 'Fin',
+        steps: [
+          {
+            element: '#step1-li',
+            intro: 'Este icono le permitira crear nuevos formularios para cargar sus obligaciones.',
+          },
+          {
+            element: '#step2-li',
+            intro: 'Ingrese el nombre de la obligación con la que identificaremos su obligación.',
+          },
+          {
+            element: '#step3-li',
+            intro: 'Ingrese detalles que considere ayudaran a relacionar los archivos presentados.',
+          },
+          {
+            element: '#step4-li',
+            intro: 'Ingrese imagenes una a una con extenciones como JPG,PNG con su respectiva coordenada y fecha de la imagen. Cuando lo requiera.',
+          },
+          {
+            element: '#step5-li',
+            intro: 'Ingrese archivos como PDF, WORD, XLSX,XLSM, ZIP, DOC,DOCX. Con un peso no mayor a 120MB y en archivos ZIP no mayores a 2GB. Ingrese estos archivos seleccionandolos al tiempo en su carpeta de origen y teniendo un orden lógico.',
+          },
+          {
+            element: '#step6-li',
+            intro: 'Marque según corresponda en su caso, si la actual obligación se esta entregando de manera PARCIAL o COMPLETA. En caso si es parcial, describa la razón de esta entrega PARCIAL.',
+          },
+          {
+            element: '#step7',
+            intro: '👏 La obligación esta terminada, podemos darle GUARDAR.',
+          },
+        ],
+        hidePrev: true,
+        hideNext: false,
+      })
+      .start();
+  }
 
   ngOnInit(): void {
+    this.introJS.start();
     this.expedienteUrl();
     this.getDataLocalStorage();
     //this.consultaObligacion();
@@ -183,8 +224,8 @@ export class AdjuntarComponent implements OnInit {
     const formGroup = this.fb.group({
       line: null,
       descripcion: [],
-      observaciones: [],      
-      viMotivoParcial: []
+      observaciones: [],
+      viMotivoParcial: [],
     });
     if (value) {
       formGroup.setValue(value);
@@ -201,9 +242,10 @@ export class AdjuntarComponent implements OnInit {
       sequenceThirdParty2: parseInt(StorageVariables.sequenceThirdParty2()),
       sequenceThirdParty: parseInt(StorageVariables.sequenceThirdParty()),
     };
-    const dataResponse: ListaTabla[] = await this.expedienteService.consultaArchivo(dtoArchivo).toPromise();
+    const dataResponse: ListaTabla[] = await this.expedienteService
+      .consultaArchivo(dtoArchivo)
+      .toPromise();
     if (dataResponse.length) {
-      
       this.formAndFiles = [] as FormAndFiles[];
 
       const arrayForms: FormGroup[] = [];
@@ -308,20 +350,25 @@ export class AdjuntarComponent implements OnInit {
     );
 
     Array.from(fileList).forEach((file: File) => {
-       
-       
-
+      if (this.validarTamanioArchivo(file)) {
         const dataEvidencia: DataEvidencia = {
           file: file,
           isEvidencia: isEvidencia,
           //viMotivoParcial:this.viMotivoParcial
         };
         formAndFileByIndexForm.data.push(dataEvidencia);
-      /* else {
+      } else {
         alert('El archivo ' + file.name + ' excede el limite de tamaño');
         //this.notifierService.show({message:'El archivo '+file.name+' excede el limite de tamaño de '+(this.maxSize/1024)+'MB' ,type:'warning'});
-      } */
+      }
     });
+  }
+
+  validarTamanioArchivo(file: File): boolean {
+    var filesize = ((file.size/1024)/1024);
+    var ext = file.name.split('.').pop();
+    var maxSize = ext=='zip'?(2*1024) :this.maxFileSizeMB;    
+    return filesize <= maxSize;
   }
 
   setValueEvidencia(
@@ -352,25 +399,41 @@ export class AdjuntarComponent implements OnInit {
   }
 
   deletedFile(indexForm: number, indexFile: number, fileName: string) {
-    const sequenceThirdParty = JSON.parse(localStorage.getItem('sec')).sequenceThirdParty;
-    const sequenceThirdParty2 = JSON.parse(localStorage.getItem('expediente')).sequenceThirdParty2;
+    const sequenceThirdParty = JSON.parse(
+      localStorage.getItem('sec')
+    ).sequenceThirdParty;
+    const sequenceThirdParty2 = JSON.parse(
+      localStorage.getItem('expediente')
+    ).sequenceThirdParty2;
 
-    const formGroupByIndexForm: FormGroup = this.obligacionesFormArray.controls[indexForm] as FormGroup;
-    const formAndFilesByIndexForm: FormAndFiles = this.formAndFiles.find((item) => item.indexForm === indexForm);
+    const formGroupByIndexForm: FormGroup = this.obligacionesFormArray.controls[
+      indexForm
+    ] as FormGroup;
+    const formAndFilesByIndexForm: FormAndFiles = this.formAndFiles.find(
+      (item) => item.indexForm === indexForm
+    );
 
     const niLineaObligacion = formGroupByIndexForm.controls.line.value;
     if (niLineaObligacion) {
-      const dataEvidence: DataEvidencia = formAndFilesByIndexForm.data[indexFile];
+      const dataEvidence: DataEvidencia =
+        formAndFilesByIndexForm.data[indexFile];
       if (dataEvidence.niNroArchivo) {
-        const params = {niLineaObligacion, niNroArchivo: dataEvidence.niNroArchivo, sequenceThirdParty, sequenceThirdParty2};
-        this.expedienteService.eliminarArchivos(params).subscribe(data => {                    
-          formAndFilesByIndexForm.data.splice(indexFile, 1);
-        }, (ex: HttpErrorResponse) => {
-          alert('No se pudo eliminar el archivo\n' + JSON.stringify(ex));
-        });      
+        const params = {
+          niLineaObligacion,
+          niNroArchivo: dataEvidence.niNroArchivo,
+          sequenceThirdParty,
+          sequenceThirdParty2,
+        };
+        this.expedienteService.eliminarArchivos(params).subscribe(
+          (data) => {
+            formAndFilesByIndexForm.data.splice(indexFile, 1);
+          },
+          (ex: HttpErrorResponse) => {
+            alert('No se pudo eliminar el archivo\n' + JSON.stringify(ex));
+          }
+        );
       } else {
         formAndFilesByIndexForm.data.splice(indexFile, 1);
-        // this.obligacionesFormArray.clear();
       }
     } else {
       formAndFilesByIndexForm.data.splice(indexFile, 1);
@@ -404,7 +467,7 @@ export class AdjuntarComponent implements OnInit {
       localStorage.getItem('expediente')
     ).sequenceThirdParty2;
     this.radicadoR = radicado_R.toString();
-    console.log(typeof(this.radicadoR));
+    console.log(typeof this.radicadoR);
     this.sec = data;
     this.secuenciaTercero = data.sequenceThirdParty;
     this.expedienteService
@@ -435,12 +498,12 @@ export class AdjuntarComponent implements OnInit {
       descripcion: obligacionValue.descripcion,
       viMotivoParcial: obligacionValue.viMotivoParcial,
       nioLinea: +obligacionValue.line,
-      
+
       sequenceThirdParty: Number(this.secuenciaTercero),
       sequenceThirdParty2: Number(this.expe),
-      comoTermina: this.comoTermina
+      comoTermina: this.comoTermina,
     };
-    console.log(obligacionValue.line)
+    console.log(obligacionValue.line);
     Swal.fire({
       title: 'Desea Guardar cambios?',
       showDenyButton: true,
@@ -448,7 +511,9 @@ export class AdjuntarComponent implements OnInit {
       confirmButtonText: `Guardar`,
     }).then((result) => {
       if (result.isConfirmed) {
-        this.expedienteService.postGuardarObligacion(guardarObligacion).subscribe((obligacionResponse: GuardarObligacionResponse) => {
+        this.expedienteService
+          .postGuardarObligacion(guardarObligacion)
+          .subscribe((obligacionResponse: GuardarObligacionResponse) => {
             const formGroup: FormGroup = this.obligacionesFormArray.controls[
               indexForm
             ] as FormGroup;
@@ -487,9 +552,10 @@ export class AdjuntarComponent implements OnInit {
                 fileData.append(
                   'fechaFoto',
                   dataEvidencia.fechaFoto
-                    ? moment(String(dataEvidencia.fechaFoto), 'YYYY-MM-DD').format(
+                    ? moment(
+                        String(dataEvidencia.fechaFoto),
                         'YYYY-MM-DD'
-                      )
+                      ).format('YYYY-MM-DD')
                     : null
                 );
                 fileData.append(
@@ -497,7 +563,9 @@ export class AdjuntarComponent implements OnInit {
                   StorageVariables.expedienteActual().expediente
                 );
 
-                this.expedienteService.postGuardarArchivo(fileData).subscribe((line) => {
+                this.expedienteService
+                  .postGuardarArchivo(fileData)
+                  .subscribe((line) => {
                     if (ultimo == contador) {
                       Swal.fire('Obligacion guardada!', '', 'success');
                       this.matAccordion.closeAll();
@@ -505,17 +573,16 @@ export class AdjuntarComponent implements OnInit {
                   });
                 // alert('ARCHIVO ' + file.name + 'GUARDADO CON line -> ' + line);
               });
-
-
             }
           });
-          Swal.fire('Obligacion guardada!', '', 'success');
-          this.matAccordion.closeAll();
+        Swal.fire('Obligacion guardada!', '', 'success');
+        this.matAccordion.closeAll();
       } else if (result.isDenied) {
         Swal.fire('No guardar cambios', '', 'info');
-      }else{
-        alert('lo sentimos, no guardo la obligación')
-      }    });
+      } else {
+        alert('lo sentimos, no guardo la obligación');
+      }
+    });
   }
 
   public siguientePrimero(): void {
@@ -528,28 +595,25 @@ export class AdjuntarComponent implements OnInit {
       sequenceThirdParty2: expediente.sequenceThirdParty2,
     };
     this.stepper.next();
-    let timerInterval
+    let timerInterval;
     Swal.fire({
       title: '!Estamos trabajando para tí!',
       html: 'Se esta generando el PDF  <b></b> un momento.',
       timer: 20000,
       timerProgressBar: true,
       didOpen: () => {
-        Swal.showLoading()
-        const b = Swal.getHtmlContainer().querySelector('strong')
-        timerInterval = setInterval(() => {
-          b.textContent = Swal.getTimerLeft().toString()
-        }, 25000)
+        Swal.showLoading();
+       
       },
       willClose: () => {
-        clearInterval(timerInterval)
-      }
+        clearInterval(timerInterval);
+      },
     }).then((result) => {
       /* Read more about handling dismissals below */
       if (result.dismiss === Swal.DismissReason.timer) {
-        console.log('cerrado')
+        console.log('cerrado');
       }
-    })
+    });
   }
   public atrasPrimero(): void {
     this.atrasPrimeroOut.emit(this.atras);
@@ -557,7 +621,8 @@ export class AdjuntarComponent implements OnInit {
 
   cambiarCheckboxEstadoObligacion(indexForm, control) {
     let opuesto = control == 'parcial' ? 'total' : 'parcial';
-    let currentForm = this.formObligaciones.controls['obligaciones']['controls'][indexForm];
+    let currentForm =
+      this.formObligaciones.controls['obligaciones']['controls'][indexForm];
     currentForm.controls[opuesto].setValue(false);
   }
 
@@ -566,5 +631,4 @@ export class AdjuntarComponent implements OnInit {
       indexForm
     ]['controls']['parcial']['value'];
   }
-
-  }
+}

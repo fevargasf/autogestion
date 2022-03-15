@@ -138,13 +138,8 @@ if(this.pageVariable   === 1){
   }
 
   getData(): void {
-    /* this.httpClient.get("./../../../../../assets/data.json").subscribe((data) => {
-      if (data) {
-        this.pdfData = data; */
+    
         this.generatePDF();
-       
-     /*  }
-    }); */
 
   }
 

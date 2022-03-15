@@ -55,11 +55,11 @@ export class ExpedientesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.recuperar_user= JSON.parse(localStorage.getItem('responsable')); 
     this.getDataForm();
     this.selectsDisabled();
     this.snackBar.dismiss();
     this.getDataLocalStorage();
-   this.recuperar_user= JSON.parse(localStorage.getItem('responsable')); 
   }
 
   public getDataForm(): void {
@@ -71,14 +71,14 @@ export class ExpedientesComponent implements OnInit {
       comunicacion: new FormControl(false, Validators.requiredTrue),
       ter_direccion: new FormControl('', Validators.required),
       ter_dir_municipio: new FormControl('', Validators.required),
-      nombre_responsable: new FormControl(""),
-      email_responsable: new FormControl(""),
-      celular_responsable: new FormControl(""),
       fijo_responsable: new FormControl(""),
       ter_nombres: new FormControl("", Validators.required),
       ter_telefono: new FormControl("", Validators.required),
       ter_email: new FormControl("", Validators.required),
-      cargo_responsable: new FormControl(""),
+      nombre_responsable: new FormControl(this.recuperar_user?this.recuperar_user.nombre:''),
+      email_responsable: new FormControl(this.recuperar_user?this.recuperar_user.correo:''),
+      celular_responsable: new FormControl(this.recuperar_user?this.recuperar_user.telefonoCelular:''),
+      cargo_responsable: new FormControl(this.recuperar_user?this.recuperar_user.cargo:''),
     });
   }
 

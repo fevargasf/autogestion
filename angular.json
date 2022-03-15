@@ -56,10 +56,10 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.scss",
+              "src/styles.scss","node_modules/intro.js/introjs.css",
               "./node_modules/angular-notifier/styles/core.css"
             ],
-            "scripts": []
+            "scripts": ["node_modules/intro.js/intro.js"]
           },
           "configurations": {
             "production": {
@@ -80,7 +80,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "975.46kb",
-                  "maximumError": "981.46kb"
+                  "maximumError": "1.02mb"
                 },
                 {
                   "type": "anyComponentStyle",

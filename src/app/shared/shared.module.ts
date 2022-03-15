@@ -7,6 +7,7 @@ import {MaterialModule} from '../material/material.module';
 import {SwiperModule} from 'swiper/angular';
 import {TableResolucionComponent} from './components/table-resolucion/table-resolucion.component';
 import {FormsModule} from '@angular/forms';
+import { PipeOrderPipe } from './components/pipe-order.pipe';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import {FormsModule} from '@angular/forms';
     ModalComponent,
     NavbarComponent,
     SwiperComponent,
-    TableResolucionComponent
+    TableResolucionComponent,
+    PipeOrderPipe
     
 
   ],
@@ -22,7 +24,8 @@ import {FormsModule} from '@angular/forms';
     CommonModule,
     MaterialModule,
     SwiperModule,
-    FormsModule
+    FormsModule,
+    
   ],
   exports: [NavbarComponent, ModalComponent, SwiperComponent, TableResolucionComponent]
 })

@@ -48,15 +48,20 @@ export class DocumentRadicadoComponent implements OnInit {
         respon_cargo: responsable.cargo,
         respon_telefono_celu: responsable.telefonoCelular,
         ter_dir_municipio:expedienteActual.ter_dir_municipio,
+        ter_nombres:expedienteActual.ter_nombres,
+        ter_email:expedienteActual.ter_email,
+        ter_celular:expedienteActual.ter_celular,
         expediente:expedienteActual.expediente
       },
       radicado: this.radicado.radicado,
-      fechaRadicado:new Date(this.radicado.fechaRadicado).toLocaleDateString() ,
+      fechaRadicado:new Date(this.radicado.fechaRadicado).toLocaleDateString(),
+      
       ruta: this.radicado.ruta,
       sequenceThirdParty: parseInt(sec.sequenceThirdParty),
       sequenceThirdParty2: parseInt(expediente.sequenceThirdParty2)
     };
-   
+    console.log(radicadoTest)
+    
     this.expedienteService
       .construirPdfRadicado(radicadoTest)
       .subscribe(
