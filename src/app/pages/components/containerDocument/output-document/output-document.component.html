@@ -15,6 +15,7 @@
 <div class="output-pdf-viewer">
   <script src="/src/assets/vfs_fonts.js"></script>
   <script src="/node_modules/pdfmake/build/pdfmake.js"></script>
+   
   <pdf-viewer
     [src]="pdfSrc"
     [(page)]="pageVariable"
@@ -25,12 +26,12 @@
     [fit-to-page]="true"
     [autoresize]="true"
     [show-borders]="true"
-    (on-progress)="onProgress($event)"
     [zoom]="zoom"
     (after-load-complete)="afterLoadComplete($event)"
     #pdfViewer
+    *ngIf="upload"
   ></pdf-viewer>
-
+ 
  <!-- 
   <mat-progress-bar
   *ngIf="upload"

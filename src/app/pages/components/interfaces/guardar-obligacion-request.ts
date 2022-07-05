@@ -6,6 +6,7 @@ export interface GuardarObligacionRequest extends BaseDTO {
     observaciones?: string;
     viMotivoParcial?:string;
     comoTermina?: string;
+    niSistemaCoordenada?:any;
     linea?: number;
     nioLinea?:number;
 }

@@ -26,4 +26,10 @@ export interface Archivos {
   coorY: number;
   viMotivoParcial:string;
   comoTermina:string;
+  niGradosLongitud?:number;
+  niMinLongitud?:number;
+  niSegLongitud?:number;
+  niGradosLatitud?:number;
+  niMinLatitud?:number;
+  niSegLatitud?:number;
 }

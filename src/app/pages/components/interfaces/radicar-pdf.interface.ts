@@ -5,5 +5,5 @@ export interface RadicarPdf{
     sequenceThirdParty2:number;
     expedientDTO:Expediente;
     radicado:string;
-    fechaRadicado:Date;
+    fechaRadicado:string;
 }

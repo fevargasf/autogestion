@@ -8,7 +8,14 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+  ValidatorFn,
+} from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute } from '@angular/router';
 import { ExpedienteService } from 'src/app/core/services/expediente.service';
@@ -17,7 +24,6 @@ import { ListasExpe } from 'src/app/pages/components/interfaces/lista-expe';
 import { Obligaciones } from 'src/app/pages/components/interfaces/obligaciones.interface';
 import { Resolucion } from 'src/app/pages/components/interfaces/resolucion.interface';
 import introJs from 'intro.js/intro.js';
-
 import Swal from 'sweetalert2';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { GuardarObligacionResponse } from 'src/app/pages/components/interfaces/guardar-obligacion-response';
@@ -32,6 +38,7 @@ import { GuardarObligacionRequest } from 'src/app/pages/components/interfaces/gu
 import { StorageVariables } from 'src/app/core/services/storageVariables';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { ListaTabla } from 'src/app/pages/components/interfaces/lista-tabla';
+import { of } from 'rxjs';
 
 import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
@@ -47,15 +54,28 @@ import {
 } from '@angular/material/core';
 import { NotifierService } from 'angular-notifier';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
+enum SistemaCoordenada {
+  ORIGEN_UNICO = 97377,
+  WGS84 = 4326
+}
 export interface DataEvidencia {
   file?: File;
   isEvidencia?: boolean;
   coorX?: number;
   coorY?: number;
+  niGradosLongitud?: number;
+  longitud_min?: number;
+  longitud_seg?: number;
+  latitud_grados?: number;
+  latitud_min?: number;
+  latitud_seg?: number;
   fechaFoto?: string;
   niNroArchivo?: number;
   viMotivoParcial?: string;
+  niSistemaCoordenada?: any;
+  checkedCoor?:boolean;
 }
 
 export interface FormAndFiles {
@@ -78,8 +98,17 @@ export interface FormAndFiles {
   ],
 })
 export class AdjuntarComponent implements OnInit {
+  form: FormGroup;
+  ordersData = [];
+  get ordersFormArray() {
+    return this.form.controls.orders as FormArray;
+  }
+
+  @Output() selecSistem = new EventEmitter<any>();
   viMotivoParcial: string;
+  public checkedCoor?: boolean;
   ComoTermina: string;
+  NiSistemaCoordenada: number;
   total: number;
   @ViewChild(MatAccordion) accordion: MatAccordion;
   panelOpenState = true;
@@ -127,7 +156,6 @@ export class AdjuntarComponent implements OnInit {
   public isSiguiente = false;
   public dataDelArchivo: any;
   public attachedFiles: Array<File> = [];
-
   public cargoExpediente = true;
   public isEditableInicio = false;
   public completo1 = false;
@@ -146,9 +174,16 @@ export class AdjuntarComponent implements OnInit {
   private maxFileSizeGB = 2;
 
   @ViewChild(MatAccordion, { static: false }) matAccordion: MatAccordion;
-
+  niSistemaCoordenada: 4326 | 97377 = 97377;
   comoTermina: 'P' | 'T' = 'T';
   introJS = introJs();
+  p: any;
+  niSistemaCoordenadaSelected = null;
+
+  SISTEMACOORDENADA = SistemaCoordenada;
+  ORIGEN_UNICO_SELECTED = true;
+  WSG84_SELECTED = false;
+
   constructor(
     private activeRoute: ActivatedRoute,
     private expedienteService: ExpedienteService,
@@ -163,7 +198,9 @@ export class AdjuntarComponent implements OnInit {
     this.formAndFiles.push({ indexForm: 0, data: [] });
 
     this.loadObligationsAndFiles();
+
   }
+
   startSteps(): void {
     this.introJS
       .setOptions({
@@ -173,27 +210,33 @@ export class AdjuntarComponent implements OnInit {
         steps: [
           {
             element: '#step1-li',
-            intro: 'Este icono le permitira crear nuevos formularios para cargar sus obligaciones.',
+            intro:
+              'Este icono le permitira crear nuevos formularios para cargar sus obligaciones.',
           },
           {
             element: '#step2-li',
-            intro: 'Ingrese el nombre de la obligación con la que identificaremos su obligación.',
+            intro:
+              'Ingrese el nombre de la obligación con la que identificaremos su obligación.',
           },
           {
             element: '#step3-li',
-            intro: 'Ingrese detalles que considere ayudaran a relacionar los archivos presentados.',
+            intro:
+              'Ingrese detalles que considere ayudaran a relacionar los archivos presentados.',
           },
           {
             element: '#step4-li',
-            intro: 'Ingrese imagenes una a una con extenciones como JPG,PNG con su respectiva coordenada y fecha de la imagen. Cuando lo requiera.',
+            intro:
+              'Ingrese imagenes una a una con extenciones como JPG,PNG con su respectiva coordenada y fecha de la imagen. Cuando lo requiera.',
           },
           {
             element: '#step5-li',
-            intro: 'Ingrese archivos como PDF, WORD, XLSX,XLSM, ZIP, DOC,DOCX. Con un peso no mayor a 120MB y en archivos ZIP no mayores a 2GB. Ingrese estos archivos seleccionandolos al tiempo en su carpeta de origen y teniendo un orden lógico.',
+            intro:
+              'Ingrese archivos como PDF, WORD, XLSX,XLSM, ZIP, DOC,DOCX. Con un peso no mayor a 120MB y en archivos ZIP no mayores a 2GB. Ingrese estos archivos seleccionandolos al tiempo en su carpeta de origen y teniendo un orden lógico.',
           },
           {
             element: '#step6-li',
-            intro: 'Marque según corresponda en su caso, si la actual obligación se esta entregando de manera PARCIAL o COMPLETA. En caso si es parcial, describa la razón de esta entrega PARCIAL.',
+            intro:
+              'Marque según corresponda en su caso, si la actual obligación se esta entregando de manera PARCIAL o COMPLETA. En caso si es parcial, describa la razón de esta entrega PARCIAL.',
           },
           {
             element: '#step7',
@@ -206,6 +249,13 @@ export class AdjuntarComponent implements OnInit {
       .start();
   }
 
+  buildOrderItemsForm(ordersData): FormGroup {
+    return this.fb.group({
+      id: ordersData.id,
+      name: ordersData.name,
+    });
+  }
+
   ngOnInit(): void {
     this.introJS.start();
     this.expedienteUrl();
@@ -215,6 +265,8 @@ export class AdjuntarComponent implements OnInit {
     this.minDate = new Date(currentYear - 1, 0, 1);
     this.maxDate = new Date(currentYear + 1, 11, 31);
   }
+
+  ///primer formulario
 
   get obligacionesFormArray() {
     return this.formObligaciones.controls['obligaciones'] as FormArray;
@@ -226,7 +278,9 @@ export class AdjuntarComponent implements OnInit {
       descripcion: [],
       observaciones: [],
       viMotivoParcial: [],
+      sistema_coordenadas: [],
     });
+
     if (value) {
       formGroup.setValue(value);
     }
@@ -242,14 +296,13 @@ export class AdjuntarComponent implements OnInit {
       sequenceThirdParty2: parseInt(StorageVariables.sequenceThirdParty2()),
       sequenceThirdParty: parseInt(StorageVariables.sequenceThirdParty()),
     };
-    const dataResponse: ListaTabla[] = await this.expedienteService
-      .consultaArchivo(dtoArchivo)
-      .toPromise();
+    const dataResponse: ListaTabla[] = await this.expedienteService.consultaArchivo(dtoArchivo).toPromise();
     if (dataResponse.length) {
-      this.formAndFiles = [] as FormAndFiles[];
+      localStorage.setItem('dataResponse', JSON.stringify(dataResponse));
 
+      this.formAndFiles = [] as FormAndFiles[];
       const arrayForms: FormGroup[] = [];
-      dataResponse.forEach((item, indexForm) => {
+      dataResponse.forEach((item: ListaTabla, indexForm) => {
         let obligacionValueForm: ObligacionValue = null;
         let dataEvidenciaList: DataEvidencia[] = [];
 
@@ -259,36 +312,51 @@ export class AdjuntarComponent implements OnInit {
             observaciones: archivo.obligaObservacion,
             viMotivoParcial: archivo.viMotivoParcial,
             line: String(item.obligaLinea),
+            sistema_coordenadas: archivo.sistema_coordenadas
           };
 
           // SE CREAN LOS ARCHIVOS AL FORMULARIO CREADO SEGUN LA POSICION DE CADA UNA DE LAS OBLIGACIONES EN EL FOR
           let dataEvidenciaValue: DataEvidencia = {};
+
           let file = new File([], archivo.archivoNombre);
 
-          if (archivo.coorX) {
-            // SI LA VARIABLE coorX TIENE UN VALOR, ES PORQUE ES UN ARCHIVO DE TIPO EVIDENCIA DE LO CONTRARIOES UN ARCHIVO DE TIPO INFORME
+          if (archivo.coorX || archivo.niGradosLongitud) {
+            // SI LA VARIABLE coorX TIENE UN VALOR, ES PORQUE ES UN ARCHIVO DE TIPO EVIDENCIA DE LO CONTRARIO ES UN ARCHIVO DE TIPO INFORME
             dataEvidenciaValue = {
               isEvidencia: true,
               coorX: archivo.coorX,
               coorY: archivo.coorY,
-              fechaFoto: moment(archivo.fechaFoto, 'YYYY-MM-DD').format(
-                'YYYY-MM-DD'
-              ),
+              niGradosLongitud: archivo.niGradosLongitud,
+              longitud_min: archivo.longitud_min,
+              longitud_seg: archivo.longitud_seg,
+              latitud_grados: archivo.latitud_grados,
+              latitud_min: archivo.latitud_min,
+              latitud_seg: archivo.latitud_seg,
+              niSistemaCoordenada: archivo.sistema_coordenadas,
+              fechaFoto: String(archivo.fechaFoto),
               file,
-              niNroArchivo: archivo.archivoNro,
-            };
+              niNroArchivo: archivo.archivoNro,              
+            };   
+            
           } else {
             dataEvidenciaValue = {
               isEvidencia: false,
               coorX: 0,
               coorY: 0,
+              niGradosLongitud:0,
+              longitud_min: 0,
+              longitud_seg: 0,
+              latitud_grados: 0,
+              latitud_min:0,
+              latitud_seg:0,
+              niSistemaCoordenada: 0,
               fechaFoto: null,
               file,
               niNroArchivo: archivo.archivoNro,
             };
           }
-
           dataEvidenciaList.push(dataEvidenciaValue);
+          
         });
 
         // SE CREA UN FORMULARIO SEGUN LA POSICION
@@ -313,6 +381,7 @@ export class AdjuntarComponent implements OnInit {
     });
     const formObligacion = this.createFormGroup();
     this.obligacionesFormArray.push(formObligacion);
+   
   }
 
   deleteFormObligacion(indexForm: number) {
@@ -363,11 +432,10 @@ export class AdjuntarComponent implements OnInit {
       }
     });
   }
-
   validarTamanioArchivo(file: File): boolean {
-    var filesize = ((file.size/1024)/1024);
+    var filesize = file.size / 1024 / 1024;
     var ext = file.name.split('.').pop();
-    var maxSize = ext=='zip'?(2*1024) :this.maxFileSizeMB;    
+    var maxSize = ext == 'zip' ? 2 * 1024 : this.maxFileSizeMB;
     return filesize <= maxSize;
   }
 
@@ -383,7 +451,7 @@ export class AdjuntarComponent implements OnInit {
     } else {
       value = (event.target as HTMLInputElement).value;
     }
-    const dataEvidencia: DataEvidencia[] = this.filesByFormIndex(indexForm);
+    const dataEvidencia: DataEvidencia[] = this.filesByFormIndexList(indexForm);
 
     switch (type) {
       case 'coorX':
@@ -395,7 +463,30 @@ export class AdjuntarComponent implements OnInit {
       case 'fechaFoto':
         dataEvidencia[indexFile].fechaFoto = value;
         break;
+      case 'niGradosLongitud':
+        dataEvidencia[indexFile].niGradosLongitud = value;
+        break;
+      case 'niMinLongitud':
+        dataEvidencia[indexFile].longitud_min = value;
+        break;
+      case 'niSegLongitud':
+        dataEvidencia[indexFile].longitud_seg = value;
+        break;
+      ////y
+      case 'niGradosLatitud':
+        dataEvidencia[indexFile].latitud_grados = value;
+        break;
+      case 'niMinLatitud':
+        dataEvidencia[indexFile].latitud_min = value;
+        break;
+      case 'niSegLatitud':
+        dataEvidencia[indexFile].latitud_seg = value;
+        break;
+      case 'niSistemaCoordenada':
+        dataEvidencia[indexFile].niSistemaCoordenada = this.niSistemaCoordenada;
+        break;
     }
+   
   }
 
   deletedFile(indexForm: number, indexFile: number, fileName: string) {
@@ -412,7 +503,7 @@ export class AdjuntarComponent implements OnInit {
     const formAndFilesByIndexForm: FormAndFiles = this.formAndFiles.find(
       (item) => item.indexForm === indexForm
     );
-
+   
     const niLineaObligacion = formGroupByIndexForm.controls.line.value;
     if (niLineaObligacion) {
       const dataEvidence: DataEvidencia =
@@ -441,7 +532,7 @@ export class AdjuntarComponent implements OnInit {
     }
   }
 
-  filesByFormIndex(indexForm): DataEvidencia[] {
+  filesByFormIndexList(indexForm): DataEvidencia[] {
     const formAndFile: FormAndFiles = this.formAndFiles.find(
       (item) => item.indexForm === indexForm
     );
@@ -456,7 +547,6 @@ export class AdjuntarComponent implements OnInit {
       this.expediente = expediente.expediente;
     });
   }
-
   public getDataLocalStorage(): void {
     const data = JSON.parse(localStorage.getItem('sec'));
     const radicado_R = JSON.parse(localStorage.getItem('radicadoR'));
@@ -467,7 +557,7 @@ export class AdjuntarComponent implements OnInit {
       localStorage.getItem('expediente')
     ).sequenceThirdParty2;
     this.radicadoR = radicado_R.toString();
-    console.log(typeof this.radicadoR);
+
     this.sec = data;
     this.secuenciaTercero = data.sequenceThirdParty;
     this.expedienteService
@@ -487,11 +577,36 @@ export class AdjuntarComponent implements OnInit {
         }
       });
   }
+  getOrders() {
+    return [
+      { id: SistemaCoordenada.ORIGEN_UNICO, name: 'Origen Único' },
+      { id: SistemaCoordenada.WGS84, name: 'WGS84' },
+    ];
+  }
+
+  changee(event: MatCheckboxChange) {  
+    
+    if (event.checked) {
+      let coordenada = null;
+      if (event.source.name === 'WGS84') {
+        
+      this.WSG84_SELECTED = true; 
+        this.ORIGEN_UNICO_SELECTED = false; 
+        coordenada = SistemaCoordenada.WGS84;
+      } else {        
+         this.WSG84_SELECTED = false; 
+        this.ORIGEN_UNICO_SELECTED = true; 
+        coordenada = SistemaCoordenada.ORIGEN_UNICO;        
+      }
+      sessionStorage.setItem('coor', JSON.stringify(coordenada));
+      console.log(coordenada);
+    }        
+  }
 
   saveObligation(indexForm: number) {
     const obligacionValue: ObligacionValue =
       this.obligacionesFormArray.controls[indexForm].value;
-
+    var data = sessionStorage.getItem('coor');
     const guardarObligacion: GuardarObligacionRequest = {
       observaciones: obligacionValue.observaciones,
       secResol: this.radicadoR,
@@ -502,8 +617,9 @@ export class AdjuntarComponent implements OnInit {
       sequenceThirdParty: Number(this.secuenciaTercero),
       sequenceThirdParty2: Number(this.expe),
       comoTermina: this.comoTermina,
+      niSistemaCoordenada: data,
     };
-    console.log(obligacionValue.line);
+    console.log(data);
     Swal.fire({
       title: 'Desea Guardar cambios?',
       showDenyButton: true,
@@ -525,7 +641,6 @@ export class AdjuntarComponent implements OnInit {
               );
               if (formAndFile && formAndFile.data && formAndFile.data.length) {
               }
-
               //TODO: Validar que files exista
               let ultimo = formAndFile.data.length;
               let contador = 0;
@@ -533,7 +648,6 @@ export class AdjuntarComponent implements OnInit {
               if (ultimo == 0) {
                 // this.cargarOblicaciones();
               }
-
               formAndFile.data.forEach((dataEvidencia: DataEvidencia) => {
                 contador++;
                 const fileData = new FormData();
@@ -549,6 +663,43 @@ export class AdjuntarComponent implements OnInit {
                   'coorY',
                   dataEvidencia.coorY ? String(dataEvidencia.coorY) : '0'
                 );
+                fileData.append('niSistemaCoordenada', String(data));
+                fileData.append(
+                  'niGradosLongitud',
+                  dataEvidencia.niGradosLongitud
+                    ? String(dataEvidencia.niGradosLongitud)
+                    : '0'
+                );
+                fileData.append(
+                  'niMinLongitud',
+                  dataEvidencia.longitud_min
+                    ? String(dataEvidencia.longitud_min)
+                    : '0'
+                );
+                fileData.append(
+                  'niSegLongitud',
+                  dataEvidencia.longitud_seg
+                    ? String(dataEvidencia.longitud_seg)
+                    : '0'
+                );
+                fileData.append(
+                  'niGradosLatitud',
+                  dataEvidencia.latitud_grados
+                    ? String(dataEvidencia.latitud_grados)
+                    : '0'
+                );
+                fileData.append(
+                  'niMinLatitud',
+                  dataEvidencia.latitud_min
+                    ? String(dataEvidencia.latitud_min)
+                    : '0'
+                );
+                fileData.append(
+                  'niSegLatitud',
+                  dataEvidencia.latitud_seg
+                    ? String(dataEvidencia.latitud_seg)
+                    : '0'
+                );
                 fileData.append(
                   'fechaFoto',
                   dataEvidencia.fechaFoto
@@ -558,11 +709,11 @@ export class AdjuntarComponent implements OnInit {
                       ).format('YYYY-MM-DD')
                     : null
                 );
+                console.log(this.niSistemaCoordenada);
                 fileData.append(
                   'expediente',
                   StorageVariables.expedienteActual().expediente
                 );
-
                 this.expedienteService
                   .postGuardarArchivo(fileData)
                   .subscribe((line) => {
@@ -570,11 +721,14 @@ export class AdjuntarComponent implements OnInit {
                       Swal.fire('Obligacion guardada!', '', 'success');
                       this.matAccordion.closeAll();
                     }
-                  });
-                // alert('ARCHIVO ' + file.name + 'GUARDADO CON line -> ' + line);
+                  }),
+                  (ex: HttpErrorResponse) => {
+                    alert(JSON.stringify(ex));
+                  };
               });
             }
           });
+
         Swal.fire('Obligacion guardada!', '', 'success');
         this.matAccordion.closeAll();
       } else if (result.isDenied) {
@@ -584,7 +738,6 @@ export class AdjuntarComponent implements OnInit {
       }
     });
   }
-
   public siguientePrimero(): void {
     this.siguientePrimeroOut.emit(true);
     const sec = JSON.parse(localStorage.getItem('sec'));
@@ -595,37 +748,18 @@ export class AdjuntarComponent implements OnInit {
       sequenceThirdParty2: expediente.sequenceThirdParty2,
     };
     this.stepper.next();
-    let timerInterval;
-    Swal.fire({
-      title: '!Estamos trabajando para tí!',
-      html: 'Se esta generando el PDF  <b></b> un momento.',
-      timer: 20000,
-      timerProgressBar: true,
-      didOpen: () => {
-        Swal.showLoading();
-       
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      },
-    }).then((result) => {
-      /* Read more about handling dismissals below */
-      if (result.dismiss === Swal.DismissReason.timer) {
-        console.log('cerrado');
-      }
-    });
   }
   public atrasPrimero(): void {
     this.atrasPrimeroOut.emit(this.atras);
   }
 
   cambiarCheckboxEstadoObligacion(indexForm, control) {
+    console.log(indexForm, control);
     let opuesto = control == 'parcial' ? 'total' : 'parcial';
     let currentForm =
       this.formObligaciones.controls['obligaciones']['controls'][indexForm];
     currentForm.controls[opuesto].setValue(false);
   }
-
   validarMostrarTextoParcial(indexForm) {
     return this.formObligaciones.controls['obligaciones']['controls'][
       indexForm

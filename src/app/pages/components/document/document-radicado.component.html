@@ -4,7 +4,7 @@
     <div class="col-md-12">
       <mat-card class="mat-card-confirmacion-envio">
         <p class="centrado">
-        <img  width="300" height="300"  src="./assets/img/gracias.png" alt="gracias" srcset="">
+        <img  width="820" height="300"  src="./assets/img/gracias.png" alt="gracias" srcset="">
       </p>
         <p> 🎉¡Se ha enviado con éxito a nuestros registros! Tu radicado <b>{{radicado?.radicado}}</b> . Te
           recomendamos estar pendiente del correo electrónico registrado para podernos comunicar contigo.</p>
@@ -15,13 +15,13 @@
 </div>
 
 <div class="buttons">
-    <button class="offset"><a [href]="pdfUrl | domSeguro" download="Documento.pdf">Descargar Radicado</a></button>
+    <button class="offset" (click)="cleraLocal()"><a [href]="pdfUrl | domSeguro" download="Documento.pdf">Descargar Radicado</a></button>
 </div>
   <div class="col-md-12" *ngIf="pdfUrl">
     <app-output-document [pdfSrc]="pdfUrl"></app-output-document> 
   </div>
 <div class="button-group">
-  <button class="offset" routerLink="/">Gestionar otra autegestión</button>
-  <button class="offset" src="https://sirena.corantioquia.gov.co/lago/CtrlIniciarApp?appCod=TRAMITE&urlRetorno=(https%3A%2F%2Fsirena.corantioquia.gov.co%2Fesirena%2FCtrlIndex)">Salir</button>
+  <button class="offset"  (click)="cleraLocal()" routerLink="/">Gestionar otra autegestión</button>
+  <button class="offset" (click)="cleraLocal()"><a href="https://pruebas.corantioquia.gov.co/lago/CtrlIniciarApp?appCod=TRAMITE&urlRetorno=(https%3A%2F%2Fpruebas.corantioquia.gov.co%2Fesirena%2FCtrlIndex)">Salir</a></button>
     
 </div>

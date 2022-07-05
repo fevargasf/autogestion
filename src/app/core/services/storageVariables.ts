@@ -16,3 +16,6 @@ export class StorageVariables {
         return JSON.parse(localStorage.getItem(StorageVariables.SECUENCE_THIRD_PARTY2)).sequenceThirdParty2;
     }
 }
+export const allowK={
+    key:'1234567890QXGjlm'
+}

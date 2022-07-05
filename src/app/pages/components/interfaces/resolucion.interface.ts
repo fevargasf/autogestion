@@ -4,4 +4,8 @@ export interface Resolucion {
   fecha: string;
   descriptor: string;
   link_descarga: string;
+  Fecha_notificacion:string;
+  sistema_coordenadas:number;
+  coordenada_x:number;
+  coordenada_y:number;
 }

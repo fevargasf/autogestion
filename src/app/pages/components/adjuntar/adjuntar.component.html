@@ -1,33 +1,31 @@
-
 <mat-card class="mat-elevation-z10">
   <h2>
-    <b>Paso 2:</b> Esta es la resolución {{resolucionInput.radicado}} del expediente {{  expediente }} a la cuál adjuntara la evidencia para realizar la
-    autogestión.
+    <b>Paso 2:</b> Esta es la resolución {{ resolucionInput.radicado }} del
+    expediente {{ expediente }} a la cuál adjuntara la evidencia para realizar
+    la autogestión.
   </h2>
   <mat-card-header>
-        <!--recorrido css -->
-        <div class="svg-wrapper">
-          <div id="text">
-            <a (click)="startSteps()"><span class="spot"></span>AYUDA 👋</a>
-          </div>
-  
-        </div>
+    <!--recorrido css -->
+    <div class="svg-wrapper">
+      <div id="text">
+        <a (click)="startSteps()"><span class="spot"></span>AYUDA 👋</a>
+      </div>
+    </div>
   </mat-card-header>
   <mat-card-content fxLayout="row" fxLayoutGap="8px">
     <div fxFlex>
       <iframe
         height="100%"
         width="100%"
-        [src]="resolucionInput.link_descarga | domSeguro" title="Ver PDF"
+        src="https://pruebas.corantioquia.gov.co/esirena/CtrlDocunet?ctrlAction=C&doAction=D&idDocunet=3097216&idDescarga=2812233097216781699...............juan"
         >Ver PDF</iframe
       >
-     <!--  [src]="resolucionInput.link_descarga | domSeguro" title="Ver PDF"
+      <!--  [src]="resolucionInput.link_descarga | domSeguro" title="Ver PDF"
         src="https://pruebas.corantioquia.gov.co/esirena/CtrlDocunet?ctrlAction=C&doAction=D&idDocunet=3097216&idDescarga=2812233097216781699...............juan"
-    -->
-    </div>   
+    --></div>
     <div fxFlex fxLayout="column">
       <div class="letter-add">
-        <h2  >Añadir más obligaciones.</h2>
+        <h2>Añadir más obligaciones.</h2>
       </div>
       <div
         class="letter-icon"
@@ -38,183 +36,346 @@
         placement="top"
         ngbTooltip="Crea un nuevo formulario!"
       >
-        <mat-icon id="step1-li" style="color: rgb(245, 209, 8)">add_circle</mat-icon>
+        <mat-icon id="step1-li" style="color: rgb(245, 209, 8)"
+          >add_circle</mat-icon
+        >
       </div>
-      <div  [formGroup]="formObligaciones">
+      <div [formGroup]="formObligaciones">
         <ng-container formArrayName="obligaciones">
           <mat-accordion multi #matAccordion>
-            <div
-              *ngFor="
-                let lessonForm of obligacionesFormArray.controls;
-                let indexForm = index
-              "
-            >
-              <mat-expansion-panel hideToggle [expanded]="true"  fxFlex>
+            <div *ngFor="let lessonForm of obligacionesFormArray.controls; let indexForm = index">              
+              <mat-expansion-panel hideToggle [expanded]="true" fxFlex>
                 <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Obligaci&oacute;n:
-                    {{
-                      obligacionesFormArray.controls[indexForm].value[
-                        "descripcion"
-                      ]
-                    }}
-                  </mat-panel-title>
+                  <mat-panel-title>Obligaci&oacute;n:{{obligacionesFormArray.controls[indexForm].value.descripcion}}</mat-panel-title>
+                  <p style="color: red">cerrar</p>
                 </mat-expansion-panel-header>
-                <form
-                  fxLayout="column"
-                  [formGroupName]="indexForm"
-                  (ngSubmit)="saveObligation(indexForm)"
-                >
-                  <input  type="hidden" formControlName="line" />
+                <form fxLayout="column" [formGroupName]="indexForm" (ngSubmit)="saveObligation(indexForm)">
+                  <input type="hidden" formControlName="line" />
+                  <input type="hidden" formControlName="sistema_coordenadas" />
                   <mat-form-field fxFlex appearance="outline">
                     <mat-label>Nombre de la Obligaci&oacute;n:</mat-label>
-                    <input  id="step2-li" matInput type="text" formControlName="descripcion" />
+                    <input id="step2-li" matInput type="text" formControlName="descripcion"/>
                   </mat-form-field>
                   <mat-form-field fxFlex appearance="outline">
                     <mat-label>Observaciones:</mat-label>
-                    <input
-                      id="step3-li"
-                      matInput
-                      type="text"
-                      formControlName="observaciones"
-                    />
+                    <input id="step3-li" matInput type="text" formControlName="observaciones"/>
                   </mat-form-field>
 
                   <!-- Agregar Coordenadas y Evidencias -->
                   <mat-card fxFlex>
                     <mat-card-header>
                       <mat-card-subtitle>
-                        <span >Cargar solo Imagenes/Fotos de evidencia con
-                          Coordenadas y fecha.</span><a href="https://geografico.corantioquia.gov.co/mapgis/mapa.jsp?aplicacion=1" target="_blank" rel="noopener noreferrer">Verificar Coordenadas</a>
-                        <input 
-                          #inputFileEvidencia
-                          accept="image/*"
-                          type="file"
-                          multiple
-                          hidden
-                          (change)="
-                            selectFiles(
-                              inputFileEvidencia.files,
-                              indexForm,
-                              true
-                            )
-                          "
-                        />
-                        <div 
-                          id="step4-li"
-                          mat-icon-button
-                          color="primay"
-                          type="button"
-                          (click)="inputFileEvidencia.click()"
-                          placement="top"
-                          ngbTooltip="Adjuntar fotos e imagenes con Coordenadas y fecha de la foto. "
-                        >
+                        <span style="font-size: 20px"></span>
+                        <span>
+                          <p style="color: rgb(14, 14, 15); font-size: 15px">
+                            <b>🌎 Cargar solo Imagenes/Fotos de evidencia conCoordenadas y fecha.</b>
+                          </p>
+                        </span>
+                      
+                        <input #inputFileEvidencia accept="image/*" type="file" multiple hidden 
+                        (change)="selectFiles(inputFileEvidencia.files, indexForm, true)"/>
+
+                        <div id="step4-li" mat-icon-button color="primay" type="button" (click)="inputFileEvidencia.click()" placement="top"
+                          ngbTooltip="Adjuntar fotos e imagenes con Coordenadas y fecha de la foto. ">
+                          <span style="font-size: 55px">👉🏻</span>
                           <mat-icon>add_circle</mat-icon>
                         </div>
                       </mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content>
-                      <ng-container
-                        *ngFor="
-                          let evidenciaData of filesByFormIndex(indexForm);
-                          let indexFile = index;
-                          let last = last
-                        "
-                      >
-                        <div
-                          *ngIf="evidenciaData.isEvidencia"
-                          fxLayout="row"
-                          fxLayoutGap="8px"
-                          fxLayoutAlign="space-around center"
-                        >
-                          <mat-form-field fxFlex appearance="outline">
-                            <mat-label>Coordenada X:</mat-label>
-                            <input
-                              matInput
-                              type="number"
-                              [value]="evidenciaData.coorX"
-                              (keyup)="
-                                setValueEvidencia(
-                                  $event,
-                                  'coorX',
-                                  indexFile,
-                                  indexForm
-                                )
-                              "
-                            />
-                          </mat-form-field>
-                          <mat-form-field fxFlex appearance="outline">
-                            <mat-label>Coordenada Y:</mat-label>
-                            <input
-                              matInput
-                              type="number"
-                              [value]="evidenciaData.coorY"
-                              (keyup)="
-                                setValueEvidencia(
-                                  $event,
-                                  'coorY',
-                                  indexFile,
-                                  indexForm
-                                )
-                              "
-                            />
-                          </mat-form-field>
-                          <mat-form-field appearance="outline">
-                            <mat-label>Fecha de la Foto:</mat-label>
-                            <input
-                              #fecha
-                              [disabled]="true"
-                              [value]="evidenciaData.fechaFoto"
-                              [max]="maxDate"
-                              matInput
-                              [matDatepicker]="picker"
-                              (dateChange)="
-                                setValueEvidencia(
-                                  $event,
-                                  'fechaFoto',
-                                  indexFile,
-                                  indexForm
-                                )
-                              "
-                              disabled
-                            />
-                            <mat-datepicker-toggle
-                              matSuffix
-                              [for]="picker"
-                            ></mat-datepicker-toggle>
-                            <mat-datepicker
-                              #picker
-                              disabled="false"
-                            ></mat-datepicker>
-                          </mat-form-field>
-                          <div
-                            (click)="
-                              deletedFile(
-                                indexForm,
-                                indexFile,
-                                evidenciaData.file.name
-                              )
-                            "
-                            mat-icon-button
-                            type="button"
-                            color="warn"
-                            placement="top"
-                            ngbTooltip="Elimina una foto!"
-                          >
-                            <mat-icon style="color: rgb(245, 8, 8)"
-                              >delete</mat-icon
-                            >
+                      <div  *ngIf="filesByFormIndexList(indexForm).length" fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="space-around center">
+                        <mat-checkbox name="Origen Único"  [checked]="obligacionesFormArray.controls[indexForm].value.sistema_coordenadas === 97377" (change)="changee($event)">Origen Único</mat-checkbox>
+                        <mat-checkbox name="WGS84" [checked]="obligacionesFormArray.controls[indexForm].value.sistema_coordenadas === 4326" (change)="changee($event)">WGS84</mat-checkbox>
+                      </div>
+
+                      <ng-container *ngFor="let evidenciaData of filesByFormIndexList(indexForm); let indexFile = index; let last = last">
+                          <div *ngIf="obligacionesFormArray.controls[indexForm].value.sistema_coordenadas === 97377 " class="origen-unico"  fxLayout="row"  fxLayoutAlign="end center" fxLayoutGap="8px">
+                            <label class="names-file">{{evidenciaData.file.name }}</label>
+                            <mat-form-field fxFlex="18" fxLayoutGap="5px" appearance="outline">
+                              <mat-label>Coordenada X:</mat-label>
+                              <input matInput type="number" [value]="evidenciaData.coorX" (keyup)="setValueEvidencia($event,'coorX',indexFile,indexForm)" />
+                            </mat-form-field>
+                            <mat-form-field fxFlex="18"   appearance="outline">
+                              <mat-label>Coordenada Y:</mat-label>
+                              <input matInput type="number" [value]="evidenciaData.coorY" (keyup)="setValueEvidencia($event,'coorY',indexFile,indexForm)" />
+                            </mat-form-field>
+                            <mat-form-field fxFlex="20"   appearance="outline">
+                              <mat-label>{{evidenciaData.fechaFoto}}</mat-label>
+                              <input #fecha [disabled]="true" value="evidenciaData.fechaFoto" [max]="maxDate" matInput
+                                [matDatepicker]="picker" (dateChange)="setValueEvidencia($event,'fechaFoto',indexFile,indexForm)" disabled />
+                              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                              <mat-datepicker #picker disabled="false"></mat-datepicker>
+                            </mat-form-field>
+                            <div (click)="deletedFile(indexForm,indexFile,evidenciaData.file.name)" mat-icon-button type="button" color="warn" placement="top"
+                              ngbTooltip="Elimina una foto!">
+                              <mat-icon style="color: rgb(245, 8, 8)">delete</mat-icon>
+                            </div>
                           </div>
-                        </div>
+                         <div *ngIf=" obligacionesFormArray.controls[indexForm].value.sistema_coordenadas === null &&ORIGEN_UNICO_SELECTED === true " class="origen-unico"  fxLayout="row"  fxLayoutAlign="end center" fxLayoutGap="8px">
+                            <label class="names-file">{{evidenciaData.file.name }}</label>
+                            <mat-form-field fxFlex="18" fxLayoutGap="5px" appearance="outline">
+                              <mat-label>Coordenada X:</mat-label>
+                              <input matInput type="number" [value]="evidenciaData.coorX" (keyup)="setValueEvidencia($event,'coorX',indexFile,indexForm)" />
+                            </mat-form-field>
+                            <mat-form-field fxFlex="18"   appearance="outline">
+                              <mat-label>Coordenada Y:</mat-label>
+                              <input matInput type="number" [value]="evidenciaData.coorY" (keyup)="setValueEvidencia($event,'coorY',indexFile,indexForm)" />
+                            </mat-form-field>
+                            <mat-form-field fxFlex="20"   appearance="outline">
+                              <mat-label>{{evidenciaData.fechaFoto}}</mat-label>
+                              <input #fecha [disabled]="true" value="evidenciaData.fechaFoto" [max]="maxDate" matInput
+                                [matDatepicker]="picker" (dateChange)="setValueEvidencia($event,'fechaFoto',indexFile,indexForm)" disabled />
+                              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                              <mat-datepicker #picker disabled="false"></mat-datepicker>
+                            </mat-form-field>
+                            <div (click)="deletedFile(indexForm,indexFile,evidenciaData.file.name)" mat-icon-button type="button" color="warn" placement="top"
+                              ngbTooltip="Elimina una foto!">
+                              <mat-icon style="color: rgb(245, 8, 8)">delete</mat-icon>
+                            </div>
+                          </div> 
+                          <!-- //// -->
+                          <div *ngIf="obligacionesFormArray.controls[indexForm].value.sistema_coordenadas === 4326 " class="wgs84">
+                            <div  fxLayout="column">
+                              <div>{{evidenciaData.file.name}}</div>
+                              <div class="coorx" fxLayout="column">
+                                <div fxLayoutAlign="center center" class="">Coordenadas X:</div>
+                                <div fxLayout="row" fxLayoutGap="3px" fxLayoutAlign="center center">
+                                  <mat-form-field fxFlex ="15" appearance="outline">
+                                    <mat-label>Grados</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.niGradosLongitud"
+                                            (keyup)="
+                                              setValueEvidencia(
+                                                $event,
+                                                'niGradosLongitud',
+                                                indexFile,
+                                                indexForm )"
+                                    />
+                                  </mat-form-field>
+                                  <mat-form-field fxFlex ="15" appearance="outline">
+                                    <mat-label>Minutos</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.longitud_min"
+                                            (keyup)="
+                                              setValueEvidencia(
+                                                $event,
+                                                'niMinLongitud',
+                                                indexFile,
+                                                indexForm )"
+                                    />
+                                  </mat-form-field>
+                                  <mat-form-field fxFlex ="15" appearance="outline">
+                                    <mat-label>Segundos</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.longitud_seg"
+                                            (keyup)="
+                                              setValueEvidencia(
+                                                $event,
+                                                'niSegLongitud',
+                                                indexFile,
+                                                indexForm)"
+                                    />
+                                  </mat-form-field>
+                                </div>
+                                <div class="content-date">
+                                  <mat-form-field fxFlex="20" appearance="outline">
+                                    <mat-label>{{evidenciaData.fechaFoto}}</mat-label>
+                                    <input #fecha [disabled]="true" [value]="evidenciaData.fechaFoto" [max]="maxDate" matInput
+                                      [matDatepicker]="picker" (dateChange)="setValueEvidencia($event,'fechaFoto',indexFile,indexForm)" disabled />
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker disabled="false"></mat-datepicker>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                              <div class="coory" fxLayout="column">
+                                <div fxLayoutAlign="center center"  class="">Coordenadas Y:</div>
+                                <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="center center">
+                                  <mat-form-field fxFlex="15" appearance="outline">
+                                    <mat-label>Grados</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.latitud_grados"
+                                          (keyup)="
+                                            setValueEvidencia(
+                                              $event,
+                                              'niGradosLatitud',
+                                              indexFile,
+                                              indexForm)"
+                                    />
+                                  </mat-form-field>
+                                  <mat-form-field fxFlex="15" appearance="outline">
+                                    <mat-label>Minutos</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.latitud_min"
+                                    (keyup)="
+                                      setValueEvidencia(
+                                        $event,
+                                        'niMinLatitud',
+                                        indexFile,
+                                        indexForm)"
+                                    />
+                                  </mat-form-field>
+                                  <mat-form-field fxFlex="15" appearance="outline">
+                                    <mat-label>Segundos</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.latitud_seg"
+                                          (keyup)="
+                                            setValueEvidencia(
+                                              $event,
+                                              'niSegLatitud',
+                                              indexFile,
+                                              indexForm)"
+                                    />
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                           
+                              <div style=" margin: 0px 30px 0px 0px;"
+                              (click)="
+                                deletedFile(
+                                  indexForm,
+                                  indexFile,
+                                  evidenciaData.file.name)"
+                                  mat-icon-button
+                                  type="button"
+                                  color="warn"
+                                  placement="top"
+                                  ngbTooltip="Elimina una foto!">
+                              <mat-icon style="color: rgb(245, 8, 8)"
+                                >delete</mat-icon>Eliminar Foto
+                              </div>
+                            </div>
+                            <mat-divider></mat-divider>
+                          </div>
+                          <div   *ngIf="obligacionesFormArray.controls[indexForm].value.sistema_coordenadas === null && WSG84_SELECTED === true" class="wgs84">
+                            <div  fxLayout="column">
+                              <div>{{evidenciaData.file.name}}</div>
+                              <div class="coorx" fxLayout="column">
+                                <div fxLayoutAlign="center center" class="">Coordenadas X:</div>
+                                <div fxLayout="row" fxLayoutGap="3px" fxLayoutAlign="center center">
+                                  <mat-form-field fxFlex ="15" appearance="outline">
+                                    <mat-label>Grados</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.niGradosLongitud"
+                                            (keyup)="
+                                              setValueEvidencia(
+                                                $event,
+                                                'niGradosLongitud',
+                                                indexFile,
+                                                indexForm )"
+                                    />
+                                  </mat-form-field>
+                                  <mat-form-field fxFlex ="15" appearance="outline">
+                                    <mat-label>Minutos</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.longitud_min"
+                                            (keyup)="
+                                              setValueEvidencia(
+                                                $event,
+                                                'niMinLongitud',
+                                                indexFile,
+                                                indexForm )"
+                                    />
+                                  </mat-form-field>
+                                  <mat-form-field fxFlex ="15" appearance="outline">
+                                    <mat-label>Segundos</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.longitud_seg"
+                                            (keyup)="
+                                              setValueEvidencia(
+                                                $event,
+                                                'niSegLongitud',
+                                                indexFile,
+                                                indexForm)"
+                                    />
+                                  </mat-form-field>
+                                </div>
+                                <div class="content-date">
+                                  <mat-form-field fxFlex="20" appearance="outline">
+                                    <mat-label>{{evidenciaData.fechaFoto}}</mat-label>
+                                    <input #fecha [disabled]="true" [value]="evidenciaData.fechaFoto" [max]="maxDate" matInput
+                                      [matDatepicker]="picker" (dateChange)="setValueEvidencia($event,'fechaFoto',indexFile,indexForm)" disabled />
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker disabled="false"></mat-datepicker>
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                              <div class="coory" fxLayout="column">
+                                <div fxLayoutAlign="center center"  class="">Coordenadas Y:</div>
+                                <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="center center">
+                                  <mat-form-field fxFlex="15" appearance="outline">
+                                    <mat-label>Grados</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.latitud_grados"
+                                          (keyup)="
+                                            setValueEvidencia(
+                                              $event,
+                                              'niGradosLatitud',
+                                              indexFile,
+                                              indexForm)"
+                                    />
+                                  </mat-form-field>
+                                  <mat-form-field fxFlex="15" appearance="outline">
+                                    <mat-label>Minutos</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.latitud_min"
+                                    (keyup)="
+                                      setValueEvidencia(
+                                        $event,
+                                        'niMinLatitud',
+                                        indexFile,
+                                        indexForm)"
+                                    />
+                                  </mat-form-field>
+                                  <mat-form-field fxFlex="15" appearance="outline">
+                                    <mat-label>Segundos</mat-label>
+                                    <input matInput type="number"
+                                    [value]="evidenciaData.latitud_seg"
+                                          (keyup)="
+                                            setValueEvidencia(
+                                              $event,
+                                              'niSegLatitud',
+                                              indexFile,
+                                              indexForm)"
+                                    />
+                                  </mat-form-field>
+                                </div>
+                              </div>
+                           
+                              <div style=" margin: 0px 30px 0px 0px;"
+                              (click)="
+                                deletedFile(
+                                  indexForm,
+                                  indexFile,
+                                  evidenciaData.file.name)"
+                                  mat-icon-button
+                                  type="button"
+                                  color="warn"
+                                  placement="top"
+                                  ngbTooltip="Elimina una foto!">
+                              <mat-icon style="color: rgb(245, 8, 8)"
+                                >delete</mat-icon>Eliminar Foto
+                              </div>
+                            </div>
+                            <mat-divider></mat-divider>
+                          </div>
+                        <!-- <div *ngIf="evidenciaData.isEvidencia" fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="space-around center"> -->
                       </ng-container>
                     </mat-card-content>
+                    
+                    <a
+                      style="margin: 0px 0px 0px 50px"
+                      href="https://geografico.corantioquia.gov.co/mapgis/mapa.jsp?aplicacion=1"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >Verificar Coordenadas Portal Geográfico</a
+                    >
                   </mat-card>
 
-                  <div *ngIf="filesByFormIndex(indexForm).length">
+                  <div *ngIf="filesByFormIndexList(indexForm).length">
                     <mat-list>
                       <mat-list-item
                         *ngFor="
-                          let evidenciaData of filesByFormIndex(indexForm);
+                          let evidenciaData of filesByFormIndexList(indexForm);
                           let indexFile = index;
                           let last = last
                         "
@@ -223,10 +384,11 @@
                           class="w-100"
                           fxLayout="row"
                           fxLayoutAlign="space-between center"
-                        >
+                          *ngIf="!evidenciaData.isEvidencia"
+                         >
                           <span>{{ evidenciaData.file.name | json }}</span>
-                          <div
-                            *ngIf="!evidenciaData.isEvidencia"
+                          <div 
+                       
                             type="button"
                             (click)="
                               deletedFile(
@@ -265,15 +427,20 @@
                   <input
                     #inputFile
                     type="file"
-                   size="102400000"
+                    size="102400000"
                     multiple
                     hidden
                     (change)="selectFiles(inputFile.files, indexForm, false)"
                   />
-                  <p id="step6-li">Considero que he cumplido con esta obligación :</p>
+                  <p id="step6-li">
+                    Considero que he cumplido con esta obligación :
+                  </p>
                   <br />
-                  <div id="step6-li" class="form-check form-check-inline">
-                    <label class="form-check-label" for="inlineCheckbox2"
+                  <div 
+                  id="step6-li" class="form-check form-check-inline">
+                    <label 
+                    for="website"
+                    class="form-check-label" for="inlineCheckbox2"
                       >Parcial </label
                     >&nbsp;
                     <input
@@ -292,6 +459,7 @@
                       />
                     </div>
                   </div>
+
                   <div class="check-inline-form">
                     <label class="form-check-label" for="inlineCheckbox2"
                       >Total &nbsp;</label
@@ -316,6 +484,8 @@
                     </button>
                   </div>
                 </form>
+                <!-- termina -->
+                
               </mat-expansion-panel>
               <div
                 mat-icon-button
@@ -330,9 +500,7 @@
           </mat-accordion>
         </ng-container>
       </div>
-      
     </div>
-    
   </mat-card-content>
   <mat-card-actions align="end">
     <button

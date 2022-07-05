@@ -3,12 +3,13 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute } from '@angular/router';
 import { ExpedienteService } from 'src/app/core/services/expediente.service';
+import { allowK } from 'src/app/core/services/storageVariables';
 import { Archivos } from 'src/app/pages/components/interfaces/archivos';
 import { ListaExpedientes } from 'src/app/pages/components/interfaces/lista_expedientes.interface';
 import { Obligaciones } from 'src/app/pages/components/interfaces/obligaciones.interface';
 import { Resolucion } from 'src/app/pages/components/interfaces/resolucion.interface';
 import Swal from 'sweetalert2';
-
+import * as CryptoJS from 'crypto-js';
 @Component({
   selector: 'app-select-resolucion',
   templateUrl: './select-resolucion.component.html',
@@ -39,8 +40,7 @@ export class SelectResolucionComponent implements OnInit {
   public isLoading3 = true;
   public displayBlock = false;
   public ocultarbotones = false;
-  public pdfSrc =
-    'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
+  private schlussel = allowK.key;
   public sec: string;
   public secuenciaTercero: string;
   public expe: string;
@@ -57,6 +57,8 @@ export class SelectResolucionComponent implements OnInit {
   public isSiguiente = false;
   public dataDelArchivo: any;
   public attachedFiles: Array<File> = [];
+  public resolUser:any;
+  public textoDesencriptado:any;
   constructor(
     private activeRoute: ActivatedRoute,
     private expedienteService: ExpedienteService,
@@ -73,11 +75,13 @@ export class SelectResolucionComponent implements OnInit {
     this.getDataLocalStorage();
     this.dataBuilder();
   }
-
   seleccionarResolucion(resolucion){
     this.seleccionResolucion.emit(resolucion);
-  }
+ localStorage.setItem('RES', JSON.stringify(resolucion));
 
+   
+
+  }
   public cargar(val: any): void {
     this.nombreArchivo = val.files[0].name;
     this.valueArchivo = val.value;
@@ -87,13 +91,11 @@ export class SelectResolucionComponent implements OnInit {
       this.visualizarBtn = true;
     }
   }
-
   public deleteAdj(checbox): void {
     if (checbox) {
       this.nombreArchivo = '';
     }
   }
-
   public siguientePrimero(): void {
     this.siguientePrimeroOut.emit(true);
     Swal.fire({
@@ -117,13 +119,11 @@ export class SelectResolucionComponent implements OnInit {
     this.ocultarObligacion = false;
     this.ocultarbotones = false;
   }
-
   public expedienteUrl(): void {
     this.activeRoute.params.subscribe((expediente: any) => {
       this.expediente = expediente.expediente;
     });
   }
-
   public getDataLocalStorage(): void {
     const data = JSON.parse(localStorage.getItem('sec'));
     this.sec = data;
@@ -137,11 +137,7 @@ export class SelectResolucionComponent implements OnInit {
               };
               localStorage.setItem('expediente', JSON.stringify(newResolucion));
               const responsable = JSON.parse(localStorage.getItem('responsable'));
-          
               responsable.sequenceThirdParty2 = JSON.stringify(value.exp_sec);
-
-             
-
               localStorage.setItem('responsable', JSON.stringify(responsable));
               this.expedienteService.guardarInformacionResponsable(responsable).subscribe(res => {
               }, err => {
@@ -150,8 +146,13 @@ export class SelectResolucionComponent implements OnInit {
               this.expe = newResolucion.sequenceThirdParty2;
               this.expedienteService.postObtenerResolucion(newResolucion.sequenceThirdParty2).subscribe((dataRe) => {
                   if (dataRe.resoluciones) {
+                    const colum= dataRe.resoluciones.length;
+                    localStorage.setItem('colum', JSON.stringify(colum));
+                    //almacenar resoluciones
                     this.resoluciones = dataRe.resoluciones;
+                    sessionStorage["arrayR"]= JSON.stringify(this.resoluciones);
                     
+
                     this.isLoading = false;
                     // tslint:disable-next-line:radix
                     this.consultaObligacion(
@@ -166,16 +167,11 @@ export class SelectResolucionComponent implements OnInit {
           });
         }
       });
-    // this.postExpediente(data.id);
   }
-
-
   public guardarObligacion(form, i): void {
     const {nombre_obligacion, observaciones, documentos, descripcion} = this.formulario.value.contenido[i];
-
     const tamResoluciones = this.resoluciones.length-1;
     this.secR = this.resoluciones[tamResoluciones].expe_sec;
-  
     const obligacion = {
       observation: observaciones,
       description: descripcion,
@@ -184,7 +180,6 @@ export class SelectResolucionComponent implements OnInit {
       sequenceThirdParty: +this.secuenciaTercero,
      // line: null
     };
-
     this.dataObligaciones.push(obligacion);
     localStorage.setItem(
       'dataObligacion',
@@ -198,7 +193,6 @@ export class SelectResolucionComponent implements OnInit {
       } else {
         this.guardoObligaciones = false;
       }
-
       this.ocultarObligacion = false;
       this.ocultarbotones = true;
       const tamFormulario = this.formulario.value.contenido.length - 1;
@@ -236,7 +230,6 @@ export class SelectResolucionComponent implements OnInit {
       console.log(err);
     });
   }
-
   public dataBuilder(): void {
     this.formulario = this.fb.group({
       contenido: this.fb.array([this.addObligacion()]),
@@ -255,7 +248,6 @@ export class SelectResolucionComponent implements OnInit {
   public createItem(data): FormGroup {
     return this.fb.group(data);
   }
-
   public detectFiles(event): void {
     const files = event.target.files;
     if (files) {
@@ -293,19 +285,15 @@ export class SelectResolucionComponent implements OnInit {
     this.addObligacionArray.push(this.addObligacion());
     this.addObligacionArray.removeAt(1);
   }
-
   public cargarObligacion(data): void {
   }
-
   public maximizar(i): void {
     this.contador = i;
     this.ocultarbotones = false;
   }
-
   public eliminarObligacion(i): void {
     this.addObligacionArray.removeAt(i);
   }
-
   public guardarTodasObligaciones(form): void {
     if (this.guardoObligaciones) {
       Swal.fire({
@@ -420,25 +408,6 @@ export class SelectResolucionComponent implements OnInit {
   public salirElemento2(): void {
     this.mostrar2 = false;
   }
-
-
-  /* public consultaArchivos(): void {
-    const consultaArchivo = {
-      // tslint:disable-next-line:radix
-      sequenceThirdParty2: parseInt(this.expe),
-      // tslint:disable-next-line:radix
-      sequenceThirdParty: parseInt(this.secuenciaTercero),
-    };
-
-    this.expedienteService
-      .consultaArchivo(consultaArchivo)
-      .subscribe((resulta) => {
-        if (resulta.result) {
-          this.archivos = resulta.archivos;
-          this.isLoading3 = false;
-        }
-      });
-  } */
 
  
 }

@@ -30,7 +30,12 @@ import { OutputPdfComponent } from './components/container/output-pdf/output-pdf
 import { HeaderComponent } from './components/header/header.component';
 import { OutputDocumentComponent } from './components/containerDocument/output-document/output-document.component';
 import { HeaderDocumentComponent } from './components/headerDoc/header-document/header-document.component';
-
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatDividerModule} from '@angular/material/divider';
 PdfMakeWrapper.setFonts(pdfFonts);
 
 @NgModule({
@@ -61,14 +66,19 @@ PdfMakeWrapper.setFonts(pdfFonts);
     PagesRoutingModule,
     PdfViewerModule,
     ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatRadioModule,
     FormsModule,
     SharedModule,
     MaterialModule,
     NgbPaginationModule,
     NgbModule,
     CoreModule,
+    MatProgressBarModule,
     FlexLayoutModule,
-    
+    MatCheckboxModule,
+    MatDividerModule
   ]
 })
 export class PagesModule {

@@ -12,6 +12,7 @@ import { resolucionPrincipal } from 'src/app/pages/components/interfaces/resoluc
 import { ResultGuardarArchivo } from 'src/app/pages/components/interfaces/result-guardar-archivo.interface';
 import { ResultGuardarObligacion } from 'src/app/pages/components/interfaces/result-guardar-obligacion.interface';
 import { environment } from 'src/environments/environment';
+import * as CryptoJS from 'crypto-js';
 function isHttpResponse<T>(event: HttpEvent<T>): event is HttpResponse<T> {
   return event.type === HttpEventType.Response
 }
@@ -58,14 +59,9 @@ export class ExpedienteService {
   hide():void{
     this.isLoading$.next(false);
   }
-
-
-  public getListaExpedientes(
-    sequenceThirdParty: string
-  ): Observable<ListaExpedientes> {
-    let params = new HttpParams().append(
-      'sequenceThirdParty',
-      sequenceThirdParty
+  public getListaExpedientes(sequenceThirdParty: string): Observable<ListaExpedientes> {
+    let params = new HttpParams().append('sequenceThirdParty',
+sequenceThirdParty
     );
     return this.httpClient.post<any>(
       `${this.BASE_URL}expedientes/lista-expedientes`,
@@ -96,21 +92,18 @@ export class ExpedienteService {
       data
     );
   }
-
   public getCookie(): Observable<any> {
     //    return this.httpClient.post(`${this.BASE_URL}coraconn`, coraconn);
     const httpGetOptions = {
       withCredentials: true,
     };
     return this.httpClient.get(`${this.BASE_URL}coraconn`, httpGetOptions);
-
   }
   public getConsultarObligacion$(data: any): Observable<any> {
     return this.httpClient.get(
       `${this.BASE_URL}obligations/consultar-obligacion?sequenceThirdParty2=${data.sequenceThirdParty2}&sequenceThirdParty=${data.sequenceThirdParty}`
     );
   }
-
   public postEliminarObligacion(
     obligaLinea,
     sequenceThirdParty,
@@ -137,32 +130,6 @@ export class ExpedienteService {
     return `${this.BASE_URL}listar-archivos/consulta-archivos?sequenceThirdParty2=${data.sequenceThirdParty2}&sequenceThirdParty=${data.sequenceThirdParty}`;
   }
 
-  public consultaBlob(data: any): Observable<Upload>{
-    const initialState: Upload = { state: 'PENDING', progress: 0 }
-    const calculateState = (upload: Upload, event: HttpEvent<unknown>): Upload => {
-      if (isHttpProgressEvent(event)) {
-        return {
-          progress: event.total
-            ? Math.round((100 * event.loaded) / event.total)
-            : upload.progress,
-          state: 'IN_PROGRESS',
-        }
-      }
-      if (isHttpResponse(event)) {
-        return {
-          progress: 100,
-          state: 'DONE',
-        }
-      }
-      return upload
-    }
-    return this.httpClient.get<Upload>(
-      `${this.BASE_URL}listar-archivos/consulta-archivos?sequenceThirdParty2=${data.sequenceThirdParty2}&sequenceThirdParty=${data.sequenceThirdParty}`
-      , data)
-      .pipe(scan(calculateState, initialState))
-    
-  }
-
   public obtenerRadicado(data): Observable<any> {
     return this.httpClient.post(`${this.BASE_URL}finish`, data);
   }
@@ -174,6 +141,11 @@ export class ExpedienteService {
       data,
       { responseType: 'arraybuffer' }
     );
+  }
+  //data:informe
+  public informeTecnico(data: any){
+    return this.httpClient.post(  `${this.BASE_URL}finish/informe`,data,
+    { responseType: 'arraybuffer' })
   }
 
   //data:Descarga RadicadoPdf
@@ -219,6 +191,32 @@ export class ExpedienteService {
         params
       }
     );
+  }
+
+  //configurar localStorage
+
+  set(keys:any, value:any){
+    var key = CryptoJS.enc.Utf8.parse(keys);
+    var iv = CryptoJS.enc.Utf8.parse(keys);
+    var encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(value.toString()), key,{
+      keySize:128 / 8,
+      iv:iv,
+      mode:CryptoJS.mode.CBC,
+      padding:CryptoJS.pad.Pkcs7
+    });
+    return encrypted.toString();
+  }
+  get(keys:any, value:any){
+    var key = CryptoJS.enc.Utf8.parse(keys);
+    var iv = CryptoJS.enc.Utf8.parse(keys);
+    var decrypted = CryptoJS.AES.decrypt(value, key, {
+      iv: key,
+      keySize:128 / 8,
+      mode:CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    return decrypted.toString(CryptoJS.enc.Utf8);
+
   }
 }
 

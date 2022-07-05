@@ -18,8 +18,9 @@
       <span (click)="siguienteTercero()" class="left title">Radicar Documento</span>
     </button>
   </div>
-  <ng-container *ngIf="pdfUrl">
-  
-    <app-output-document [pdfSrc]="pdfUrl"></app-output-document>
+  <ng-container >
+    <span style='font-size:30px;'>&#8987;</span>
+    <div  id="progressBar"><mat-progress-bar mode="indeterminate"></mat-progress-bar><h1 class="center">¡Un momento, Estamos trabajando para tí!</h1></div> 
+    <app-output-document  *ngIf="TopdfUrl"  [pdfSrc]="pdfUrl"></app-output-document> 
   </ng-container>
 </div>

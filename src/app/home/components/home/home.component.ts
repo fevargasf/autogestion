@@ -31,8 +31,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-       this.cargarDatosIniciales();
-     //this.getDataLocalStorage();
+      // this.cargarDatosIniciales();
+     this.getDataLocalStorage();
   }
 
   public getDataLocalStorage(): void {
@@ -45,7 +45,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (datas.result) {
           datas.lista_expedientes.map((value) => {
             this.nombreUsuario = value.ter_nombres;
-             console.log(value.ter_nombres)
             this.openSnackBar(this.nombreUsuario);
            
 
@@ -67,11 +66,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   public siguientePrimero(estado: any): void {}
 
   public expedienteData(data: any): void {
-    console.log(data);
+    
   }
 
   public cerrarSession(): void {
     localStorage.removeItem('sec');
+    localStorage.removeItem('radicadoR');
+    localStorage.removeItem('responsable');
+    localStorage.removeItem('responsable');
+    localStorage.removeItem('expediente');
   }
 
   public openSnackBar(nombre): void {

@@ -47,15 +47,7 @@ export class OutputPdfComponent implements OnInit {
     this.getData();
   }
 
-  // zoom functionality for the pdf viewer
-  setZoom(type: string): void {
-    console.log(type);
-    if (type === "increment") {
-      this.zoom += this.zoomAmt;
-    } else if (type === "decrement") {
-      this.zoom -= this.zoomAmt;
-    }
-  }
+
 
   // pdfSrc value we are taking from the pdfmake generate function in buffer type so currently this willnot work
   // after the pdf is generated it will work
@@ -120,17 +112,15 @@ export class OutputPdfComponent implements OnInit {
   isEdge(): boolean {
     return !this.isIE() ;
   }
-
   // after load complete of the pdf function
   afterLoadComplete(pdf: PDFDocumentProxy): void {
     this.pdf = pdf;
     this.totalPages = pdf.numPages;
   }
-
   generatePDF(): void {
     const sec = JSON.parse(localStorage.getItem('sec'));
     const expediente = JSON.parse(localStorage.getItem('expediente'));
-    this.pdfSrc =`https://sirena.corantioquia.gov.co/autogestion/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`
+    this.pdfSrc =`http://localhost:5000/api/self-management/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`
     // All the contents required goes here
     this.documentDefinition = {
       info: {
@@ -167,7 +157,6 @@ export class OutputPdfComponent implements OnInit {
       this.pdfSrc = buffer;
     });
   }
-
   getData(): void {
    this.generatePDF();
     };

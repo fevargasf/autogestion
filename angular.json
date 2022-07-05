@@ -23,6 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies":["crypto-js"],
             "outputPath": "dist/autogestion-frontend-master",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -59,7 +60,9 @@
               "src/styles.scss","node_modules/intro.js/introjs.css",
               "./node_modules/angular-notifier/styles/core.css"
             ],
-            "scripts": ["node_modules/intro.js/intro.js"]
+            "scripts": [
+              
+              "node_modules/intro.js/intro.js"]
           },
           "configurations": {
             "production": {

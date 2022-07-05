@@ -20,4 +20,13 @@ export interface Obligaciones {
     coorY: number;
     viMotivoParcial:string;
     comoTermina:string;
+    niSistemaCoordenada?:number;
+    coordenadas?:string;
+    niGradosLongitud?:number;
+    longitud_min?:number;
+    longitud_seg?:number;
+    latitud_grados?:number;
+    latitud_min?:number;
+    latitud_seg?:number;
+    sistema_coordenadas?: number;
 }

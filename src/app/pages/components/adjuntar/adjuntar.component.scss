@@ -322,6 +322,7 @@ button {
 }
 .check-inline-form {
 margin: 2px 2px 2px 20px;
+width: 100px;
 }
 .form-check-input[type=checkbox] {
   border-radius: .25em;
@@ -352,7 +353,7 @@ margin: 2px 2px 2px 20px;
     text-align: center;
     margin-top: 50px;
     position: absolute;
-    right: -1100px;
+    right: -150vh;
     font-weight: bold;
     z-index: 10;
     cursor: help;
@@ -366,4 +367,19 @@ margin: 2px 2px 2px 20px;
   cursor: help;
   
 }
+.mat-form-field-infix {
+  display: block;
+  position: relative;
+  flex: auto;
+  min-width: 0;
+ width: 0px !important; 
+}
 
+
+.names-file {
+  margin: 0px 10px 10px 10px;
+}
+ .content-date{
+  margin: -80px -80px 0px 27px;
+
+}

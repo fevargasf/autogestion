@@ -1,6 +1,6 @@
 import {ErrorHandler, Injector, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {LayoutComponent} from './layout/layout.component';

@@ -10,6 +10,8 @@ import {ListaExpedientes} from 'src/app/pages/components/interfaces/lista_expedi
 import { DomSanitizer } from '@angular/platform-browser';
 import {pdfDefaultOptions,LinkTarget,PageRenderedEvent} from 'ngx-extended-pdf-viewer';
 import { Observable, Subscription } from 'rxjs';
+import { HttpEventType, HttpResponse,HttpClient} from "@angular/common/http";
+
 @Component({
   selector: 'app-resumen-datos',
   templateUrl: './resumen-datos.component.html',
@@ -22,10 +24,8 @@ export class ResumenDatosComponent implements OnInit {
   @Output() actualiza = new EventEmitter<boolean>();
   @Output() atrasTerceroComp = new EventEmitter<boolean>();
   @Output() siguienteTerceroComp = new EventEmitter<any>();
-
   @Input() events: Observable<any>;
   private eventsSubscription:Subscription;
-
 
   public listaExpedientes: ListaExpedienteArr[];
   public resoluciones: Resolucion[];
@@ -41,8 +41,10 @@ export class ResumenDatosComponent implements OnInit {
   public ter_direccion: string;
   public isLoading = false;
   public pdfHandler;
+  public TopdfUrl = true;
   fileUrl;
   constructor(
+    private http: HttpClient,
     private stepper: MatStepper,
     private expediente: ExpedienteService,
     private activeRoute: ActivatedRoute,
@@ -58,9 +60,7 @@ export class ResumenDatosComponent implements OnInit {
     this.getDataLocalStore();
     this.tipoPersonas();
     this.dataObligaciones();
-    //this.getDataArchivoLocalStorage();
     this.listaExpedientesComp();
-    //this.obligacionyarchivos();
     this.expediente.radicadoObservable$.subscribe((data) => {
       this.radicado = data;
     });
@@ -70,9 +70,10 @@ export class ResumenDatosComponent implements OnInit {
     this.eventsSubscription = this.events.subscribe(state=>{
       if(state){
         this.generarPdf();
-      
+        
       }else{
         this.pdfUrl = "";
+
       }
     });
   }
@@ -94,29 +95,7 @@ export class ResumenDatosComponent implements OnInit {
        if (value.isConfirmed) {
         //this.stepper.next();
         this.radicar();
-        let timerInterval
-
-        Swal.fire({
-          title: '!Estamos trabajando para tí!',
-          html: 'Se esta generando el PDF Radicado, <strong></strong>un momento.',
-          timer: 30000,
-          timerProgressBar: true,
-          didOpen: () => {
-            Swal.showLoading()
-            const b = Swal.getHtmlContainer().querySelector('strong')
-            timerInterval = setInterval(() => {
-              b.textContent = Swal.getTimerLeft().toString()
-            }, 20000)
-          },
-          willClose: () => {
-            clearInterval(timerInterval)
-          }
-        }).then((result) => {
-          /* Read more about handling dismissals below */
-          if (result.dismiss === Swal.DismissReason.timer) {
-            console.log('cerrado')
-          }
-        })
+    /*  */
       } else {
       } 
     });
@@ -134,7 +113,6 @@ export class ResumenDatosComponent implements OnInit {
       // tslint:disable-next-line:radix
       sequenceThirdParty: parseInt(sec.sequenceThirdParty)
     };
-
     this.expediente.obtenerRadicado(dataRadicado).subscribe((result) => {
       this.expediente.radicadoData(result.voRadicadoCoe);
       if (
@@ -143,25 +121,22 @@ export class ResumenDatosComponent implements OnInit {
         result.noSecDocCoe === null ||
         result.voRutaCoe === null ||
         result.voRadicadoCoe === "null" ||
-        result.doRadicado === "null" ||
+        result.voFechaRadicado === "null" ||
         result.noSecDocCoe === "null" ||
         result.voRutaCoe === "null" 
       ) {
         Swal.fire(`${result.voError}`, '', 'error');
-
       } else {
-        let radicado = {radicado: result.voRadicadoCoe, ruta: result.voRutaCoe, fechaRadicado:result.doRadicado};
+        let radicado = {radicado: result.voRadicadoCoe, ruta: result.voRutaCoe, fechaRadicado:result.voFechaRadicado };
+        localStorage.setItem('coe', JSON.stringify(radicado));
         this.siguienteTerceroComp.emit(radicado);
       }
     });
   }
-
-
   public aceptarModal(): void {
     this.stepper.next();
     this.dialog.closeAll();
   }
-
   public getDataLocalStore(): void {
     const sec = JSON.parse(localStorage.getItem('sec'));
     const expediente = JSON.parse(localStorage.getItem('expediente'));
@@ -196,28 +171,27 @@ export class ResumenDatosComponent implements OnInit {
     const sec = JSON.parse(localStorage.getItem('sec'));
     const expediente = JSON.parse(localStorage.getItem('expediente'));
     const expedienteActual = JSON.parse(sessionStorage.getItem('expedienteActual'));
-    this.pdfUrl =`https://sirena.corantioquia.gov.co/autogestion/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`;
+    this.pdfUrl =`http://localhost:5000/api/self-management/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`;
     this.isLoading=true;
     
+  
     let data = {
       sequenceThirdParty : sec.sequenceThirdParty,
       sequenceThirdParty2 :expedienteActual.exp_sec
     }
     this.pdfUrl =  this.expediente.consultaArchivoURL(data);
-    /* this.expediente.consultaBlob(data).subscribe(
-      result=>{
-        debugger
-      let file = new Blob([result],{type:"application/pdf"});
-      let blobUrl = URL.createObjectURL(file);
+  
 
-      this.pdfUrl = blobUrl;
-     } 
-    ); */
+   /*  
+   /*  este servicio tiene tres ambientes, se debe asignar a la variable pdfUrl, según el ambiente donde se quiera ejecutar para generara el pdf antes de la radicación
+   
+       `https://pruebas.corantioquia.gov.co/autogestion/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`;
+        https://sirena.corantioquia.gov.co/autogestion/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}
+        http://localhost:5000/api/self-management/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}
+  
+   */
+  };
 
-   /*  `https://pruebas.corantioquia.gov.co/autogestion/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`; */
-  }
-
- 
 
   public pageInitialized(e: CustomEvent) {
   }
@@ -231,6 +205,7 @@ export class ResumenDatosComponent implements OnInit {
     this.expediente.postObtenerResolucion(expedienteActual.exp_sec).subscribe((result) => {
       if (result.result) {
         this.resoluciones = result.resoluciones;
+        
       }
     });
   }

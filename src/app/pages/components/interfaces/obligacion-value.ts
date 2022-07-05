@@ -3,7 +3,7 @@ export interface ObligacionValue {
   observaciones: string;
   viMotivoParcial: string;
   line: string;
-  
+  sistema_coordenadas: number;
 }
 
 

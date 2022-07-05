@@ -32,15 +32,18 @@ export class DocumentRadicadoComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.radicado);
     this.construirPdfRadicado();
-   
   }
-  
   construirPdfRadicado() {
     const expediente = JSON.parse(localStorage.getItem('expediente'));
     const expedienteActual = JSON.parse(sessionStorage.getItem('expedienteActual'));
     const sec = JSON.parse(localStorage.getItem('sec'));
     const responsable = JSON.parse(localStorage.getItem('responsable'));
-    
+    const RES = JSON.parse(localStorage.getItem('RES'));
+    const dataResponse =JSON.parse(localStorage.getItem('dataResponse'));
+    const coe =JSON.parse(localStorage.getItem('coe'));
+    const colum =JSON.parse(localStorage.getItem('colum'));
+    const totalResolucion=JSON.parse(sessionStorage["arrayR"]);
+    console.log(totalResolucion);
     const radicadoTest = {
       expedientDTO: {
         respon_nombre: responsable.nombre,
@@ -51,47 +54,47 @@ export class DocumentRadicadoComponent implements OnInit {
         ter_nombres:expedienteActual.ter_nombres,
         ter_email:expedienteActual.ter_email,
         ter_celular:expedienteActual.ter_celular,
-        expediente:expedienteActual.expediente
+        expediente:expedienteActual.expediente,
+        radicado:RES.radicado,
+        fecha_firmeza:expedienteActual.fecha_firmeza,
+        coe_RADICADO:this.radicado.radicado,
+        nombre_asunto:expedienteActual.nombre_asunto,
+        coordenada_x:RES.coordenada_x,
+        coordenada_y:RES.coordenada_y,
+        sistema_coordenadas:RES.sistema_coordenadas,
+        descriptor:RES.descriptor,
+        colum:colum,
+        arrayR:totalResolucion
       },
       radicado: this.radicado.radicado,
-      fechaRadicado:new Date(this.radicado.fechaRadicado).toLocaleDateString(),
-      
+      fechaRadicado:this.radicado.fechaRadicado,
       ruta: this.radicado.ruta,
       sequenceThirdParty: parseInt(sec.sequenceThirdParty),
       sequenceThirdParty2: parseInt(expediente.sequenceThirdParty2)
     };
-    console.log(radicadoTest)
-    
+    console.log('total',totalResolucion);
     this.expedienteService
       .construirPdfRadicado(radicadoTest)
       .subscribe(
         (result) => {
         let file = new Blob([result],{type:"application/pdf"});
         let blobUrl = URL.createObjectURL(file);
-
         this.pdfUrl = blobUrl;
-
       },error=>{
         Swal.fire({
           title: '<strong>Lo sentimos, no fue posible radicar tu Archivo</strong>',
           icon: 'info',
           html:
             'Ya enviamos una notificación a nuestros profesionales, ' ,
-            
           showCloseButton: true,
           showCancelButton: true,
           focusConfirm: false,
           confirmButtonText:
             '<i class="fa fa-thumbs-up"></i> Entiendo',
-          confirmButtonAriaLabel: 'Thumbs up, great!',
-          cancelButtonText:
-            '<i class="fa fa-thumbs-down"></i>',
-          cancelButtonAriaLabel: 'Thumbs down'
         })
       }
       );
   }
-
   public siguientePrimero(): void {
     this.siguientePrimeroOut.emit(true);
     Swal.fire({
@@ -105,11 +108,19 @@ export class DocumentRadicadoComponent implements OnInit {
 
     });
   }
-
   public siguienteQuito(estado: any): void {
     this.completo5 = estado;
     this.isEditable5 = !estado;
      this.stepper.next();
   }
+  cleraLocal(){
+    window.sessionStorage.removeItem("expedienteActual");
+    window.localStorage.removeItem("radicadoR");
+    window.localStorage.removeItem("sec");
+    window.localStorage.removeItem("responsable");
+    window.localStorage.removeItem("expediente");
+    
+  }
  
 }
+

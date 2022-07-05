@@ -21,10 +21,8 @@ pdfMake.fonts = fonts;
   styleUrls: ['./output-document.component.scss']
 })
 export class OutputDocumentComponent implements OnInit {
-  @Input() radicado:any;
-  
- // expediente: any;
- @Input() pdfSrc; // this sample, dynamic one we will generate with the pdfmake
+@Input() radicado:any;
+@Input() pdfSrc; // this sample, dynamic one we will generate with the pdfmake
   pageVariable = 1;
   // Initialize variables required for the header and this component
   fileName = "Documento.pdf";
@@ -40,38 +38,20 @@ export class OutputDocumentComponent implements OnInit {
   generatedPDF: any;
   pdfData;
   fileUrl;
+  pdfUrl
   public progress;
   public percentLoaded;
   public downloaded: string | undefined;
+  upload= true;
   expedienteService: any;
   constructor(
     private httpClient: HttpClient,
     private expediente: ExpedienteService) { }
     
   ngOnInit(): void {
-    console.log(this.pdfSrc);
-    this.pageVariable = 1;
+    
+    
   }
-  onProgress(event) {
-   
-if(this.pageVariable   === 1){
-
-
-}else if(event.loaded / event.total * 100){
- 
-
-}
-    var percentLoaded = event.loaded / event.total * 100;
-  
-    console.log( Math.round((100 * event.loaded) / event.total))
-   
-   console.log(percentLoaded,"Avanzo" );
- 
-  }
- 
-  
-
-
 
   // to know the browser is IE or not
   isIE(): boolean {
@@ -87,13 +67,20 @@ if(this.pageVariable   === 1){
   afterLoadComplete(pdf: PDFDocumentProxy): void {
     this.pdf = pdf;
     this.totalPages = pdf.numPages;
+    this.contentLoaded();
   }
+
+  contentLoaded() {
+    document.getElementById("progressBar").style.display = "none";
+}
 
   generatePDF(): void {
     const expediente = JSON.parse(localStorage.getItem('expediente'));
     const expedienteActual = JSON.parse(sessionStorage.getItem('expedienteActual'));
     const sec = JSON.parse(localStorage.getItem('sec'));
     const responsable = JSON.parse(localStorage.getItem('responsable'));
+    this.upload=false;
+    console.log(this.upload,"aqui")
     
     // All the contents required goes here
     this.documentDefinition = {
@@ -113,19 +100,6 @@ if(this.pageVariable   === 1){
       pageSize: "A4",
       pageOrientation: "landscape",
       pageMargins: [40, 60, 40, 60], // left, top, right, bottom margin values
-      content: [
-        {
-          text: "Sample test to check the font",
-          style: "head", // normal text with custom font
-        },
-        {
-          text: ">",
-          font: "Icomoon", // icon intgerated to the pdfmake document
-          fontSize: 18,
-        },
-      ], // it will be discussed later
-      styles,
-      defaultStyle,
     };
 
     // Generating the pdf
@@ -134,13 +108,54 @@ if(this.pageVariable   === 1){
     // This generated pdf buffer is used for the download, print and for viewing
     this.generatedPDF.getBuffer((buffer) => {
       this.pdfSrc = buffer;
+    
     });
   }
-
+  
   getData(): void {
-    
+   
         this.generatePDF();
+       
 
   }
 
 }
+/* 
+const initialState: Upload = { state: 'PENDING', progress: 0 }
+const calculateState = (upload: Upload, event: HttpEvent<unknown>): Upload => {
+  if (isHttpProgressEvent(event)) {
+    return {
+      progress: event.total
+        ? Math.round((100 * event.loaded) / event.total)
+        : upload.progress,
+      state: 'IN_PROGRESS',
+    }
+  }
+  if (isHttpResponse(event)) {
+    return {
+      progress: 100,
+      state: 'DONE',
+    }
+  }
+  return upload
+} */
+/* 
+ progress: 0 
+this.uploadFilesService.upload(fileIn,dir).subscribe(
+      event => {
+  if (event.type === HttpEventType.UploadProgress) {
+    return {
+      progress: event.total
+        ? Math.round((100 * event.loaded) / event.total)
+        : upload.progress,
+      state: 'IN_PROGRESS',
+    }
+  }
+  if (isHttpResponse(event)) {
+    return {
+      progress: 100,
+      state: 'DONE',
+    }
+  }
+  return upload
+} */
