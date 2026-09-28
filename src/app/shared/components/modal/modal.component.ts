@@ -16,7 +16,7 @@ export class ModalComponent implements OnInit {
   'ter_celular','ter_dir_depto','ter_dir_municipio','ter_direccion','ter_documento','ter_email','ter_naturaleza','ter_nombres','ter_sec' ,'ter_telefono',
   'ter_tipo_documento','territorial', 'ultima_autogestion'];
   @Input() modalI: any;
-  @Output() optenerExpedienteOut = new EventEmitter<any>();
+  @Output() obtenerExpedienteOut = new EventEmitter<any>();
   public sec: string;
   public listaExpedientes: ListaExpedienteArr[];
   public result: any;
@@ -32,8 +32,8 @@ export class ModalComponent implements OnInit {
     this.modal.dismissAll();
   }
 
-  public optenerExpediente(expediente: any): void {
-    this.optenerExpedienteOut.emit(expediente);
+  public obtenerExpediente(expediente: any): void {
+    this.obtenerExpedienteOut.emit(expediente);
   }
 
   public getDataLocalStorage(): void {
@@ -41,36 +41,21 @@ export class ModalComponent implements OnInit {
     this.sec = data;
     this.expedienteService.getListaExpedientes(data.sequenceThirdParty).subscribe((datas) => {
       if (datas.result) {
-        console.log(datas.result)
         this.listaExpedientes = datas.lista_expedientes;
-        console.log(this.listaExpedientes)
         this.listaExpedientes = this.listaExpedientes.filter((item) => {
-          return item.motivo_no_admite !== 'El expediente aun no tiene resolución que decide' && item.exp_estado !== 'Archivado';
+          return item.motivo_no_admite !== 'El expediente aun no tiene resolución que decide' && item.exp_estado == 'Activo'&& item.admite_autogestion == "S";
         });
-
-       // elemento: Element[] =this.listaExpedientes
       }
     });
-
   }
-  
-  sortByCol(nombre_asunto: string) {
-    // if(this.order === '') {
-    //   this.order += name;
-    // } else if(this.order !=='' && this.order.includes(name)){
-    //   console.log('alreday includes name');
-    //   this.order.replace(name, '');
-    // } else {
-    //   console.log('in last else');
-    //   this.order += name;
-    // }
 
+  sortByCol(nombre_asunto: string) {
     if(this.templist.length > 0 ) {
       if(this.templist.indexOf(nombre_asunto) !== -1){
-        console.log('alreday includes name');
+      //  console.log('alreday includes name');
         this.templist.pop();
       }else {
-        console.log('not  includes name');
+       // console.log('not  includes name');
         this.templist.push(nombre_asunto);
       }
     } else {
@@ -79,7 +64,7 @@ export class ModalComponent implements OnInit {
 
     this.order = this.templist.join();
    // this.orderBy.transform(this.ELEMENT_DATA, this.order);
-    console.log(nombre_asunto, this.order);
+
   }
 
 }

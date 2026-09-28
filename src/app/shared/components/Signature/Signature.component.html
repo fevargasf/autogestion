@@ -1,0 +1,107 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" *ngIf="isVisible">
+  <div class="bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-6 w-9/12 h-5/6 flex flex-col">
+    <div class="flex justify-end">
+      <button (click)="closeModal()" type="button"
+        class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600"
+        aria-label="Close">
+        <span class="sr-only">Close</span>
+        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Contenido con scroll si es necesario -->
+    <div class="overflow-auto flex-1">
+      <!-- Título -->
+      <h2 class="relative flex flex-row gap-x-2 mx-auto bg-gradient-to-r from-indigo-400 via-indigo-300 to-purple-500  px-1 py-1 rounded-lg">Firmar Documento</h2>
+     <!--  <p class="text-sm text-gray-600 mt-1">Ingrese su nombre, email, télefono, cargue su firma y confirme y guarde.</p>
+ -->
+      <!-- Formulario -->
+      <form [formGroup]="formulario" (ngSubmit)="onUpload()" class="mt-4">
+        <!-- Inputs en dos columnas -->
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Nombre -->
+          <div>
+            <label for="nombre" class="block text-sm font-medium text-gray-700">
+              Nombre Completo:
+            </label>
+            <input type="text" [formControlName]="'nombre_responsable'"
+              class="w-full p-2 mt-1 border rounded-lg focus:outline-blue-500" />
+            <span *ngIf="isValidField('nombre_responsable')" class="form-text text-danger">
+              {{ getFieldError('nombre_responsable') }}
+            </span>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="Email" class="block text-sm font-medium text-gray-700">
+              Email:
+            </label>
+            <input type="text" [formControlName]="'email_responsable'"
+              class="w-full p-2 mt-1 border rounded-lg focus:outline-blue-500" />
+            <span *ngIf="isValidField('email_responsable')" class="form-text text-danger">
+              {{ getFieldError('email_responsable') }}
+            </span>
+          </div>
+
+          <!-- Teléfono -->
+          <div>
+            <label for="telefono" class="block text-sm font-medium text-gray-700">
+              Teléfono:
+            </label>
+            <input type="number" [formControlName]="'celular_responsable'"
+              class="w-full p-2 mt-1 border rounded-lg focus:outline-blue-500" />
+            <span *ngIf="isValidField('celular_responsable')" class="form-text text-danger">
+              {{ getFieldError('celular_responsable') }}
+            </span>
+          </div>
+
+          <!-- Cédula -->
+          <div>
+            <label for="cedula" class="block text-sm font-medium text-gray-700">
+              Número de Cédula o NIT:
+            </label>
+            <input type="number" [formControlName]="'cc_responsable'"
+              class="w-full p-2 mt-1 border rounded-lg focus:outline-blue-500" />
+            <span *ngIf="isValidField('cc_responsable')" class="form-text text-danger">
+              {{ getFieldError('cc_responsable') }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Pestañas -->
+        <div class="flex border-b mt-4">
+
+          <a (click)="cancelFile()" class="px-4 py-2 text-blue-600 border-b-2 border-transparent hover:border-blue-600">
+            Eliminar firma  <mat-icon style="color: rgb(253, 4, 4); cursor: pointer;">delete</mat-icon>
+          </a>
+          <a (click)="fileUpload.click()" style=" cursor: pointer;" class="px-4 py-2 text-blue-600 border-b-2 border-blue-600">
+            Cargue su firma <mat-icon  >file_upload</mat-icon>
+          </a>
+          <input type="file" id="fileUpload" #fileUpload name="fileUpload" style="display:none;"
+          (change)="onChange($event)" />
+        </div>
+
+        <!-- Vista previa -->
+
+          <div class="flex items-center justify-center border p-3 bg-white rounded">
+            <p class="text-gray-500">Firmado por:</p>
+            <img *ngIf="imagePreview" [src]="imagePreview" alt="Image" class="h-12 ml-2">
+          </div>
+
+        <!-- Botones -->
+        <div class="mt-4 flex justify-between">
+          <button class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
+            Confirmar y Firmar
+          </button>
+   <!--        <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+            Cancelar
+          </button> -->
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

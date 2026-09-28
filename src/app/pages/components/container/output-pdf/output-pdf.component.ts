@@ -44,7 +44,8 @@ export class OutputPdfComponent implements OnInit {
     ) {}
 
   ngOnInit(): void {
-    this.getData();
+   // this.getData();
+   // console.log('este output')
   }
 
 
@@ -115,12 +116,12 @@ export class OutputPdfComponent implements OnInit {
   // after load complete of the pdf function
   afterLoadComplete(pdf: PDFDocumentProxy): void {
     this.pdf = pdf;
-    this.totalPages = pdf.numPages;
+    this.totalPages = pdf?.numPages;
   }
-  generatePDF(): void {
+/*    generatePDF(): void {
     const sec = JSON.parse(localStorage.getItem('sec'));
     const expediente = JSON.parse(localStorage.getItem('expediente'));
-    this.pdfSrc =`http://localhost:5000/api/self-management/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`
+    this.pdfSrc =`https://sirena.corantioquia.gov.co/autogestion/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`
     // All the contents required goes here
     this.documentDefinition = {
       info: {
@@ -159,6 +160,6 @@ export class OutputPdfComponent implements OnInit {
   }
   getData(): void {
    this.generatePDF();
-    };
-  
+    };  */
+
 }

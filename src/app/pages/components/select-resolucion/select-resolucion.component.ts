@@ -1,6 +1,6 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, Input, ViewChild, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { MatStepper } from '@angular/material/stepper';
+//import { MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute } from '@angular/router';
 import { ExpedienteService } from 'src/app/core/services/expediente.service';
 import { allowK } from 'src/app/core/services/storageVariables';
@@ -10,20 +10,27 @@ import { Obligaciones } from 'src/app/pages/components/interfaces/obligaciones.i
 import { Resolucion } from 'src/app/pages/components/interfaces/resolucion.interface';
 import Swal from 'sweetalert2';
 import * as CryptoJS from 'crypto-js';
+import { HttpErrorResponse } from '@angular/common/http';
+import { of, Subscription } from 'rxjs';
+import { catchError, distinctUntilChanged, switchMap, take, tap } from 'rxjs/operators';
 @Component({
   selector: 'app-select-resolucion',
   templateUrl: './select-resolucion.component.html',
   styleUrls: ['./select-resolucion.component.scss']
 })
-export class SelectResolucionComponent implements OnInit {
+export class SelectResolucionComponent implements OnInit, OnDestroy {
   @ViewChild('inputFile') inputFile: ElementRef;
+  @Output() seleccionResolucion = new EventEmitter<any>();
+  @Output() siguientePrimeroOut = new EventEmitter<any>();
+  @Input() expedienteInput:  ListaExpedientes;
+  public sinResolucion:boolean = false;
+  currentUserSubscription: Subscription;
+  banderaSubscription: Subscription;
   public nombreArchivo: string;
   public nombreObligacion: string;
   public ocultarObligacion = true;
   public valueArchivo: string;
-  @Output() seleccionResolucion = new EventEmitter<any>();
-  @Output() siguientePrimeroOut = new EventEmitter<any>();
-  @Input() expedienteInput:  ListaExpedientes;
+  public cambioNombre:  string;
   public atras = true;
   public siguiente = true;
   public visualizarBtn = false;
@@ -40,10 +47,9 @@ export class SelectResolucionComponent implements OnInit {
   public isLoading3 = true;
   public displayBlock = false;
   public ocultarbotones = false;
-  private schlussel = allowK.key;
   public sec: string;
   public secuenciaTercero: string;
-  public expe: string;
+  public expe: string | number;
   public secR: number;
   public formulario: FormGroup;
   public archivosArr: any[] = [];
@@ -59,11 +65,12 @@ export class SelectResolucionComponent implements OnInit {
   public attachedFiles: Array<File> = [];
   public resolUser:any;
   public textoDesencriptado:any;
+  public responsable: any;
+  public banderaSiguiente = {'bandera':false, 'tipo': null };
+
   constructor(
     private activeRoute: ActivatedRoute,
-    private expedienteService: ExpedienteService,
-    private fb: FormBuilder,
-    private stepper: MatStepper
+    private expedienteService: ExpedienteService
   ) {
     this.resoluciones = [];
     this.obligaciones = [];
@@ -73,326 +80,127 @@ export class SelectResolucionComponent implements OnInit {
   ngOnInit(): void {
     this.expedienteUrl();
     this.getDataLocalStorage();
-    this.dataBuilder();
-  }
-  seleccionarResolucion(resolucion){
-    this.seleccionResolucion.emit(resolucion);
- localStorage.setItem('RES', JSON.stringify(resolucion));
+    this.responsable =  JSON.parse(this.expedienteService.getData('responsable'));
+    this.currentUserSubscription =  this.expedienteService.currentUser$.subscribe((user) => {
+      this.cambioNombre = this.responsable.nombre? this.responsable?.nombre : user;
+    });
 
-   
-
-  }
-  public cargar(val: any): void {
-    this.nombreArchivo = val.files[0].name;
-    this.valueArchivo = val.value;
-    if (this.valueArchivo === '') {
-      this.visualizarBtn = false;
-    } else {
-      this.visualizarBtn = true;
-    }
-  }
-  public deleteAdj(checbox): void {
-    if (checbox) {
-      this.nombreArchivo = '';
-    }
-  }
-  public siguientePrimero(): void {
-    this.siguientePrimeroOut.emit(true);
-    Swal.fire({
-      title:
-        '¿Está seguro que desea adjuntar esta información?, Al dar clic en aceptar no podrá regresar a adjuntar obligaciones?',
-      icon: 'question',
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      showCancelButton: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.stepper.next();
-      } else {
-      }
+    this.banderaSubscription = this.expedienteService.banderaExpe$.subscribe((siguienteB) =>{
+      this.banderaSiguiente = siguienteB;
     });
   }
 
-  public anadirObligaciones(): void {
-    this.contador += 1;
-    this.addObligacionArray.push(this.addObligacion());
-    this.ocultarObligacion = false;
-    this.ocultarbotones = false;
+  seleccionarResolucion(resolucion){
+    this.seleccionResolucion.emit(resolucion);
+    this.expedienteService.saveData('RES', JSON.stringify(resolucion));
+   // this.expedienteService.bandera({'bandera':false, 'tipo':null});
+
   }
+
   public expedienteUrl(): void {
     this.activeRoute.params.subscribe((expediente: any) => {
       this.expediente = expediente.expediente;
     });
   }
   public getDataLocalStorage(): void {
-    const data = JSON.parse(localStorage.getItem('sec'));
-    this.sec = data;
-    this.secuenciaTercero = data.sequenceThirdParty;
-    this.expedienteService.getListaExpedientes(data.sequenceThirdParty).subscribe((datas) => {
-        if (datas.result) {
-          datas.lista_expedientes.filter((value) => {            
-            if (value.expediente === this.expediente) {
-              const newResolucion = {
-                sequenceThirdParty2: value.exp_sec.toString(),
-              };
-              localStorage.setItem('expediente', JSON.stringify(newResolucion));
-              const responsable = JSON.parse(localStorage.getItem('responsable'));
-              responsable.sequenceThirdParty2 = JSON.stringify(value.exp_sec);
-              localStorage.setItem('responsable', JSON.stringify(responsable));
-              this.expedienteService.guardarInformacionResponsable(responsable).subscribe(res => {
-              }, err => {
-                console.log(err);
-              });
-              this.expe = newResolucion.sequenceThirdParty2;
-              this.expedienteService.postObtenerResolucion(newResolucion.sequenceThirdParty2).subscribe((dataRe) => {
-                  if (dataRe.resoluciones) {
-                    const colum= dataRe.resoluciones.length;
-                    localStorage.setItem('colum', JSON.stringify(colum));
-                    //almacenar resoluciones
-                    this.resoluciones = dataRe.resoluciones;
-                    sessionStorage["arrayR"]= JSON.stringify(this.resoluciones);
-                    
+     const data = JSON.parse(localStorage.getItem('sec'));
+      this.expedienteService.getListaExpedientes(data.sequenceThirdParty).pipe(
+        // Filtra la lista para encontrar el expediente correcto
+        switchMap((datas) => {
+          if (datas.result) {
 
-                    this.isLoading = false;
-                    // tslint:disable-next-line:radix
-                    this.consultaObligacion(
-                      // tslint:disable-next-line:radix
-                      parseInt(newResolucion.sequenceThirdParty2),
-                      // tslint:disable-next-line:radix
-                      parseInt(this.secuenciaTercero)
-                    );
-                  }
-                });
+            let consultaResponsableBD;
+            const expedienteEncontrado = datas.lista_expedientes.find((value) => {
+              const { expediente, respon_nombre } = value;
+
+              // Asignar el valor de respon_nombre a consultaResponsableBD
+              consultaResponsableBD = respon_nombre;
+
+              // Retornar true solo si el expediente coincide con this.expediente
+              return expediente === this.expediente;
+            });
+
+        //    this.responsable.sequenceThirdParty2 = JSON.parse(localStorage.getItem('expediente'))
+            if (expedienteEncontrado) {
+              const newResolucion =  JSON.parse(localStorage.getItem('expediente') || undefined)
+
+
+              // Guarda la resolución en localStorage
+              this.expe = newResolucion | newResolucion.sequenceThirdParty2;
+              const responsableGuardado = this.responsable;
+
+              let tipoNatural = localStorage.getItem('isTipoPersona');
+
+               this.responsable.sequenceThirdParty2 =  this.expe;
+                return this.expedienteService.guardarInformacionResponsable(this.responsable).pipe(
+                  tap((event) => {
+                    if(tipoNatural !== 'N' ){
+                      Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: '¡Datos de contacto guardados!',
+                        showConfirmButton: false,
+                        timer: 1500,
+                      });
+                      // Marcar como guardado
+                      localStorage.setItem('responsableGuardado', 'true');
+                    }
+                  }),
+                  catchError((error: HttpErrorResponse) => {
+                    let incorrecto = JSON.stringify(error.error['text'])?.split('.')[0];
+                    Swal.fire({
+                      title: incorrecto,
+                      icon: 'warning',
+                    });
+                    return of(null); // Devuelve un observable vacío en caso de error
+                  })
+                );
+
             }
-          });
-        }
-      });
-  }
-  public guardarObligacion(form, i): void {
-    const {nombre_obligacion, observaciones, documentos, descripcion} = this.formulario.value.contenido[i];
-    const tamResoluciones = this.resoluciones.length-1;
-    this.secR = this.resoluciones[tamResoluciones].expe_sec;
-    const obligacion = {
-      observation: observaciones,
-      description: descripcion,
-      secResol: this.secR,
-      sequenceThirdParty2: +this.expe,
-      sequenceThirdParty: +this.secuenciaTercero,
-     // line: null
-    };
-    this.dataObligaciones.push(obligacion);
-    localStorage.setItem(
-      'dataObligacion',
-      JSON.stringify(this.dataObligaciones)
-    );
-    this.expedienteService.dataObligacion(this.dataObligaciones);
 
-    this.expedienteService.postGuardarObligacion(obligacion).subscribe(data => {
-      if (data.result) {
-        this.guardoObligaciones = true;
-      } else {
-        this.guardoObligaciones = false;
-      }
-      this.ocultarObligacion = false;
-      this.ocultarbotones = true;
-      const tamFormulario = this.formulario.value.contenido.length - 1;
-      this.nombreObligacion = this.formulario.value.contenido[tamFormulario].nombre_obligacion;
-
-      const bodyObligations = {
-        sequenceThirdParty2: +this.expe,
-        sequenceThirdParty: +this.secuenciaTercero,
-      };
-
-      this.expedienteService.getConsultarObligacion$(bodyObligations).subscribe(data => {
-        const obligaciones = data.obligations ? data.obligations : [];
-        let line = 0;
-        obligaciones.forEach(obligacion => {
-          if (obligacion.line > line) {
-            line = obligacion.line; 
           }
-        });
+          return of(null); // Si no hay resultado, devolver un observable vacío
+        }),
+        switchMap((_) => {
+          return this.expedienteService.postObtenerResolucion(String(this.expe)).pipe(
+            tap((dataRe) => {
 
-        documentos.forEach(file => {
-          const fileData = new FormData();
-          fileData.append('sequenceThirdParty2', this.expe);
-          fileData.append('sequenceThirdParty', this.secuenciaTercero);
-          fileData.append('line', String(line));
-          fileData.append('file', file);
-          this.expedienteService.postGuardarArchivo(fileData).subscribe(res => {
-          }, error => {
-            console.log(error)
-          });
-        });
-      }, error => {
-        console.log(error)
-      });
-    }, err => {
-      console.log(err);
-    });
-  }
-  public dataBuilder(): void {
-    this.formulario = this.fb.group({
-      contenido: this.fb.array([this.addObligacion()]),
-    });
-  }
+              if (dataRe.resoluciones) {
+                const colum = dataRe.resoluciones.length;
+                localStorage.setItem('colum', JSON.stringify(colum));
 
-  public addObligacion(): FormGroup {
-    return this.fb.group({
-      nombre_obligacion: ['', Validators.required],
-      documentos: [[], Validators.required],
-      observaciones: ['', Validators.required],
-      descripcion: ['', Validators.required],
-    });
-  }
+                this.resoluciones = dataRe.resoluciones;
+                this.expedienteService.saveData('arrayR', JSON.stringify(this.resoluciones));
+                this.isLoading = false;
+                this.sinResolucion = false;
+              }
+              if(!dataRe.resoluciones.length){
+                this.isLoading = true;
+                this.sinResolucion = false;
+              }
+            }),
+            catchError((error) => {
+              console.log(error)
+              if (error && error.message && error?.['error'].message.includes('No se encontraron resoluciones')) {
+              // Si el backend envía un mensaje específico de que no hay datos
+              this.isLoading = false;
+              this.sinResolucion = true; // Mostrar el mensaje de "sin resoluciones"
 
-  public createItem(data): FormGroup {
-    return this.fb.group(data);
-  }
-  public detectFiles(event): void {
-    const files = event.target.files;
-    if (files) {
-      for (const file of files) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.photos.push(
-            this.createItem({
-              file: ['', Validators.required],
-              url: [e.target.result, Validators.required],
+            } else {
+              // Manejo de otros errores
+              this.isLoading = false;
+              console.error('Ocurrió otro error inesperado');
+            }
+
+              return of(null); // Manejamos el error sin interrumpir el flujo
             })
           );
-          this.photos.controls.map((val) => {
-          });
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-  }
+        }),
+        take(1) // Tomar solo el primer valor emitido y completar el observable
+      ).subscribe(
 
-  public eliminaArchivos(i): void {
-    this.photos.removeAt(i);
-  }
-
-  get photos(): FormArray {
-    return this.formulario.get('documentos') as FormArray;
-  }
-
-  get addObligacionArray(): FormArray {
-    return this.formulario.get('contenido') as FormArray;
-  }
-
-  public visualizar(): void {
-    this.mostrarContenido = true;
-    this.addObligacionArray.push(this.addObligacion());
-    this.addObligacionArray.removeAt(1);
-  }
-  public cargarObligacion(data): void {
-  }
-  public maximizar(i): void {
-    this.contador = i;
-    this.ocultarbotones = false;
-  }
-  public eliminarObligacion(i): void {
-    this.addObligacionArray.removeAt(i);
-  }
-  public guardarTodasObligaciones(form): void {
-    if (this.guardoObligaciones) {
-      Swal.fire({
-        title: `Obligaciones guardadas correctamente`,
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
-      });
-      this.expedienteService.postGuardarArchivo(this.dataDelArchivo).subscribe(
-        (archivo: any) => {
-          if (archivo.result) {
-          } else {
-            alert('No Archivo');
-          }
-        },
-        (err) => {
-          // console.log('ERROR DEL SERVIDOR', err);
-        }
       );
-      this.isSiguiente = false;
-
-      // tslint:disable-next-line:radix
-      this.consultaObligacion(
-        // tslint:disable-next-line:radix
-        parseInt(this.expe),
-        // tslint:disable-next-line:radix
-        parseInt(this.secuenciaTercero)
-      );
-    } else {
-      Swal.fire({
-        title: `El limite de Obligaciones para guardar en BD de pruebas es de 9`,
-        icon: 'error',
-        confirmButtonText: 'Aceptar',
-      });
     }
-  }
-
-  public consultaObligacion(expe, secuenciaTercero): void {
-    const {documentos} = this.formulario.value.contenido[0];
-    const obligacion = {
-      // tslint:disable-next-line:radix
-      sequenceThirdParty2: parseInt(expe),
-      // tslint:disable-next-line:radix
-      sequenceThirdParty: parseInt(secuenciaTercero),
-    };
-    this.dataObligacion = obligacion;
-    // tslint:disable-next-line:radix
-    this.expedienteService
-      .getConsultarObligacion$(obligacion)
-      .subscribe((data) => {
-        if (data.result) {
-          this.obligaciones = data.obligations;
-          this.isLoading2 = false;
-         
-          this.obligaciones.map((datas) => {
-            this.lineR = datas.niLinea;
-          });
-       
-        }
-      });
-  }
-
-
-
-  public getFilesNames(obligacion): Array<string> {
-    const files = obligacion.get('documentos').value
-    return files.map(file => file.name);
-  }
-
-  public eliminarArchivo(obligacionIndex, fileIndex): void {
-    const {nombre_obligacion, observaciones, documentos, descripcion} =
-      this.formulario.value.contenido[obligacionIndex];
-    documentos.splice(fileIndex, 1)
-    
-    this.addObligacionArray.controls[obligacionIndex].setValue(
-    {
-      documentos,
-      nombre_obligacion,
-      observaciones,
-      descripcion
-    });
-  }
-
-  public onFileSelect(event, index): void {
-    if (event.target.files.length > 0) {
-      const {nombre_obligacion, observaciones, documentos, descripcion} = this.formulario.value.contenido[index];
-      const file = event.target.files[0];
-      documentos.push(file)
-    
-      this.addObligacionArray.controls[index].setValue(
-      {
-        documentos,
-        nombre_obligacion,
-        observaciones,
-        descripcion
-      });
-    }
-    this.inputFile.nativeElement.value = '';
-  }
-
   public pasarEncima(e): void {
     this.mostrar = true;
   }
@@ -409,5 +217,13 @@ export class SelectResolucionComponent implements OnInit {
     this.mostrar2 = false;
   }
 
- 
+  ngOnDestroy(): void {
+    if (this.currentUserSubscription) {
+      this.currentUserSubscription.unsubscribe();
+    }
+    if (this.banderaSubscription) {
+      this.banderaSubscription.unsubscribe();
+    }
+  }
+
 }

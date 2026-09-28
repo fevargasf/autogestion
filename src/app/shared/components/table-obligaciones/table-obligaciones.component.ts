@@ -33,7 +33,7 @@ export class TableObligacionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('YA', this.obligaciones.length);
+
   }
 
   public eliminarObligacion(line, i): void {
@@ -65,7 +65,7 @@ export class TableObligacionesComponent implements OnInit {
       }
     });
   }
-
+/*
   public actualizarObligacion(modal, obligacion: Obligaciones): void {
     this.nombreObligaciones = obligacion.nombre_obligacion;
     this.observaciones = obligacion.observaciones;
@@ -75,10 +75,10 @@ export class TableObligacionesComponent implements OnInit {
       expecter: this.dataObligacion.expecter,
       sequence: this.dataObligacion.sequenceThirdParty,
       secR: 321525,
-      
-    };
-  }
 
+    };
+  } */
+/*
   public ActualizarObligacion(): void {
     Swal.fire({
       title: '¿Desea Actualizar esta Obligación?',
@@ -107,7 +107,7 @@ export class TableObligacionesComponent implements OnInit {
         this.dialog.closeAll();
       }
     });
-  }
+  } */
 
   public atrasPrimero(): void {
     this.stepper.previous();

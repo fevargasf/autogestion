@@ -17,12 +17,12 @@ export class JuridicoNaturalComponent implements OnInit {
   }
 
   public personaNatural(): void {
-    console.log('Persona natural');
+  //  console.log('Persona natural');
     this.router.navigate(['auth/login', this.natural]);
   }
 
   public personaJuridica(): void {
-    console.log('Persona jurdicia');
+  //  console.log('Persona jurdicia');
     this.router.navigate(['auth/login', this.juridica]);
   }
 

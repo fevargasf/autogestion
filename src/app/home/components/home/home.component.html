@@ -1,118 +1,66 @@
-<div id="contaner">
-  <ul id="menu">
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href="">Instructivo</a>
-      <ul>
-        <li>
-          <a target="_blank" href="./assets/img/Instructivo.pdf" >​ver instructivo</a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://www.corantioquia.gov.co/Paginas/VerContenido.aspx?List=MenuInferior&item=448"
-            >Polìtica de Protección Datos Personales</a
-          >
-        </li>
-        <li></li>
-      </ul>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""> Inicio</a>
-      <ul>
-        <li>
-          <a routerLink="autogestiones-realizadas" class="nav__link" >Ver Expedientes</a>
-        </li>
-        <li>
-          <a href=""></a>
-        </li>
-        <li>
-          <a routerLink="lista-expedientes" class="nav__link" >Realizar Autogestión</a>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
- 
-    <li></li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li></li>
-    <li>
-      <a href=""></a>
-    </li>
-    <li>
-      <a href=""></a>
-    </li>
- 
- 
-    <li>
-      <a (click)="cerrarSession()"
-        href="https://sirena.corantioquia.gov.co/lago/CtrlIniciarApp?appCod=TRAMITE&urlRetorno=(https%3A%2F%2Fsirena.corantioquia.gov.co%2Fesirena%2FCtrlIndex)" >Cerrar Sesión</a >
-      <ul>
-        <li>
-          <a routerLink="autogestiones-realizadas" class="nav__link"></a>
-        </li>
-        <li>
-          <a routerLink="autogestiones-realizadas" class="nav__link" >!MUCHAS GRACIAS!</a>
-        </li>
-        
-      </ul>
-    </li>
-  
-  </ul>
-</div>
-<div class="user_logo">
-  <img
-    width="150"
-    height="50"
-    src="https://www.corantioquia.gov.co/wp-content/uploads/2021/09/logo_corantioquia.png"
-    alt="logo"
-  />
-</div>
-<div  class="iframe">
-  <iframe 
 
-  width="35%" 
-  height="380" src="https://www.youtube.com/embed/D9wISQtYThY"  
-  title="YouTube video player" frameborder="0" allow="accelerometer; 
-  autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<ul class="menu">
+  <li title="home"><a href="#" class="menu-button home">menu</a></li>
+  <li title="inicio"><a rel="noopener noreferrer" routerLink="/" class="inicio">inicio</a></li>
+  <li title="salir"><a rel="noopener noreferrer" (click)="cerrarSession()"  class="salir">salir</a></li>
+  <li title="Instructivo"><a  rel="noopener noreferrer" (click)="openModal()"  class="Instructivo">Instructivo</a></li>
+  <li title="Política"><a rel="prefetch"  target="_blank" rel="noopener noreferrer"
+    href="https://www.corantioquia.gov.co/proteccion-de-datos-personales/" class="Politica"> Politica de Protección de Datos</a></li>
+</ul>
+<app-instructivo #modal></app-instructivo>
+<div class="w-full  fixed bg-no-repeat bg-cover h-full z-0  overflow-hidden">
+  <div class="background">
+    <svg class="cloud cloud--small cloud--1" viewbox="0 0 300 200"><path class="cloud__svg" d="M115,40h0A15,15,0,0,0,94,27.26c0-.09,0-.17,0-.26a26.47,26.47,0,0,0-.38-4.48A8,8,0,0,0,89,8a7.91,7.91,0,0,0-2.45.39,27,27,0,0,0-44.3,7.82A16.48,16.48,0,0,0,16,29.5a17.22,17.22,0,0,0,.33,3.32A12,12,0,1,0,12,56a12.66,12.66,0,0,0,1.64-.12A8.6,8.6,0,0,0,15,56H115a8,8,0,0,0,0-16Z"/></svg>
+    <svg class="cloud cloud--medium cloud--2" viewbox="0 0 300 200"><path class="cloud__svg" d="M115,40h0A15,15,0,0,0,94,27.26c0-.09,0-.17,0-.26a26.47,26.47,0,0,0-.38-4.48A8,8,0,0,0,89,8a7.91,7.91,0,0,0-2.45.39,27,27,0,0,0-44.3,7.82A16.48,16.48,0,0,0,16,29.5a17.22,17.22,0,0,0,.33,3.32A12,12,0,1,0,12,56a12.66,12.66,0,0,0,1.64-.12A8.6,8.6,0,0,0,15,56H115a8,8,0,0,0,0-16Z"/></svg>
+    <svg class="cloud cloud--large cloud--3" viewbox="0 0 300 200"><path class="cloud__svg" d="M115,40h0A15,15,0,0,0,94,27.26c0-.09,0-.17,0-.26a26.47,26.47,0,0,0-.38-4.48A8,8,0,0,0,89,8a7.91,7.91,0,0,0-2.45.39,27,27,0,0,0-44.3,7.82A16.48,16.48,0,0,0,16,29.5a17.22,17.22,0,0,0,.33,3.32A12,12,0,1,0,12,56a12.66,12.66,0,0,0,1.64-.12A8.6,8.6,0,0,0,15,56H115a8,8,0,0,0,0-16Z"/></svg>
+    <svg class="cloud cloud--medium cloud--4" viewbox="0 0 300 200"><path class="cloud__svg" d="M115,40h0A15,15,0,0,0,94,27.26c0-.09,0-.17,0-.26a26.47,26.47,0,0,0-.38-4.48A8,8,0,0,0,89,8a7.91,7.91,0,0,0-2.45.39,27,27,0,0,0-44.3,7.82A16.48,16.48,0,0,0,16,29.5a17.22,17.22,0,0,0,.33,3.32A12,12,0,1,0,12,56a12.66,12.66,0,0,0,1.64-.12A8.6,8.6,0,0,0,15,56H115a8,8,0,0,0,0-16Z"/></svg>
 
-</div>
+<!--   <svg class="skyline" viewBox="0 0 1785 325" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <path class="skyline__svg" d="M1202,235 L1220.87097,235 L1237,257 L1237,303 L1249,303 L1249,261 L1336,261 L1336,186 L1347.22581,164 L1411.77419,164 L1423,186 L1423,222 L1445,222 L1445,135.438321 L1490,113.374107 L1490,47 L1502,47 L1502,28 C1502,24.6862915 1504.68629,22 1508,22 L1597,22 C1600.31371,22 1603,24.6862915 1603,28 L1603,47 L1615,47 L1615,206 L1640,206 L1640,245 L1683,245 L1683,120 L1741,120 L1741,107 L1775,107 L1775,120 L1785,120 L1785,324 L1683,324 L1615,324 L1538,324 L1490,324 L1463,324 L1463,325 L1361,325 L1336,325 L1230,325 L1169,325 L1044,325 L1015,325 L977,325 L862,325 L862,324 L808,324 L725,324 L674,324 L645,324 L645,325 L536,325 L509,325 L395,325 L329,325 L195,325 L164,325 L123,325 L0,325 L0,106 L134,106 L134,301 L164,301 L164,244 L195,244 L195,176 L329,176 L329,228 L353,228 L353,194 L365,194 L365,228 L384.709677,228 L402,252 L402,301 L416,301 L416,256 L509,256 L509,176 L521,152 L590,152 L602,176 L602,215 L625,215 L625,121.535156 L674,97.4025328 L674,27 L687,27 L687,6 C687,2.6862915 689.686292,-6.08718376e-16 693,0 L789,0 C792.313708,4.16143205e-15 795,2.6862915 795,6 L795,27 L808,27 L808,197 L834,197 L834,239 L862,239 L862,121 L881,121 L881,105 L943,105 L943,91 L979,91 L979,105 L990,105 L990,303 L1015,303 L1015,249 L1044,249 L1044,186 L1169,186 L1169,235 L1191,235 L1191,203 L1202,203 L1202,235 Z"></path>
+
+  </svg> -->
+  </div>
+  <div class="relative top-0 left-0 w-full h-full z-10  flex items-center justify-center flex-col gap-5 ">
+    <div class="flex w-full items-center rounded-full h-14">
+      <div class="flex-1 border-b border-indigo-600"></div>
+      <button
+      class="rounded-full border flex items-center justify-center"
+      [disabled]="isDisabled"
+      [ngClass]="{ 'opacity-50 cursor-not-allowed': isDisabled }"
+      [ngStyle]="isDisabled ? {'pointer-events': 'none'} : {}"
+      style="background: linear-gradient(to right, #b1939d 0%, #a27f9d 25%, #797ab0 50%, #607fb6 75%, #5787af 100%);"
+      class="rounded-full border flex items-center justify-center" style="background: linear-gradient(to right, #b1939d 0%, #a27f9d 25%, #797ab0 50%, #607fb6 75%, #5787af 100%);">
+        <div class="stage">
+          <div class="mariposa">
+            <div class="mariposa-turn">
+              <div class="mariposa-flutter"></div>
+            </div>
+          </div>
+
+          <div class="mariposa">
+            <div class="mariposa-turn">
+              <div class="mariposa-flutter"></div>
+            </div>
+          </div>
+
+          <div class="mariposa">
+            <div class="mariposa-turn">
+              <div class="mariposa-flutter"></div>
+            </div>
+          </div>
+        </div>
+        <div class="group px-6 py-4 z-50" routerLink="autogestiones-realizadas">
+          <span class="text-white text-lg font-semibold leading-7">Consultar expedientes</span>
+        </div>
+        <div class="outline-none border-r-2 border-l-2 border-white text-lg py-4 px-6">
+          <span class="text-white text-lg font-semibold leading-7"> </span>
+        </div>
+        <div class="px-6 py-4 flex items-center z-50 justify-center" routerLink="lista-expedientes">
+          <span class="text-white text-lg font-semibold leading-7">Iniciar Autogestión</span>
+        </div>
+      </button>
+      <div class="flex-1 border-b border-indigo-600"></div>
+      </div>
+  </div>
+  </div>
+

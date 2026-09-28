@@ -8,10 +8,11 @@ const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    children: [      
-           { path: '',redirectTo: '/auth/login',pathMatch: 'full'}, 
+    children: [
+   { path: '',redirectTo: '/auth/login',pathMatch: 'full'},
       {
-        path: 'home',
+       path: 'home',
+        //path: '',
         //canActivate: [AuthGuard],
         loadChildren: () => import('../app/home/home.module').then(m => m.HomeModule),
       },

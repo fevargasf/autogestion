@@ -1,4 +1,4 @@
-import { Component, OnInit,Input } from "@angular/core";
+import { Component, OnInit,Input, Output, EventEmitter } from "@angular/core";
 import { PDFDocumentProxy } from "ng2-pdf-viewer";
 import { HttpClient } from "@angular/common/http";
 import {ExpedienteService} from 'src/app/core/services/expediente.service';
@@ -10,19 +10,17 @@ import { styles, defaultStyle } from "./../../../../config/customStyles";
 // import the pdfmake library
 import  pdfMake from "pdfmake/build/pdfmake";
 
-
 // PDFMAKE fonts
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 pdfMake.fonts = fonts;
-
 @Component({
   selector: 'app-output-document',
   templateUrl: './output-document.component.html',
   styleUrls: ['./output-document.component.scss']
 })
-export class OutputDocumentComponent implements OnInit {
+export class OutputDocumentComponent  {
 @Input() radicado:any;
-@Input() pdfSrc; // this sample, dynamic one we will generate with the pdfmake
+@Input() pdfSrc:string; // this sample, dynamic one we will generate with the pdfmake
   pageVariable = 1;
   // Initialize variables required for the header and this component
   fileName = "Documento.pdf";
@@ -36,22 +34,12 @@ export class OutputDocumentComponent implements OnInit {
   pdf: PDFDocumentProxy; // to access pdf information from the pdf viewer
   documentDefinition: object;
   generatedPDF: any;
-  pdfData;
-  fileUrl;
-  pdfUrl
-  public progress;
-  public percentLoaded;
   public downloaded: string | undefined;
-  upload= true;
-  expedienteService: any;
+
+
   constructor(
-    private httpClient: HttpClient,
     private expediente: ExpedienteService) { }
-    
-  ngOnInit(): void {
-    
-    
-  }
+
 
   // to know the browser is IE or not
   isIE(): boolean {
@@ -66,96 +54,25 @@ export class OutputDocumentComponent implements OnInit {
   // after load complete of the pdf function
   afterLoadComplete(pdf: PDFDocumentProxy): void {
     this.pdf = pdf;
-    this.totalPages = pdf.numPages;
-    this.contentLoaded();
+    this.totalPages = pdf?.numPages;
   }
 
-  contentLoaded() {
-    document.getElementById("progressBar").style.display = "none";
-}
 
   generatePDF(): void {
-    const expediente = JSON.parse(localStorage.getItem('expediente'));
-    const expedienteActual = JSON.parse(sessionStorage.getItem('expedienteActual'));
     const sec = JSON.parse(localStorage.getItem('sec'));
-    const responsable = JSON.parse(localStorage.getItem('responsable'));
-    this.upload=false;
-    console.log(this.upload,"aqui")
-    
-    // All the contents required goes here
-    this.documentDefinition = {
-      expedientDTO: {
-        respon_nombre: responsable.nombre,
-        respon_correo: responsable.correo,
-        respon_cargo: responsable.cargo,
-        ter_celular: responsable.telefonoCelular,
-        ter_dir_municipio:expedienteActual.ter_dir_municipio,
-        expediente:expedienteActual.expediente
-      },
-      radicado: this.radicado.radicado,
-      fechaRadicado:this.radicado.fechaRadicado,
-      ruta: this.radicado.ruta,
-      sequenceThirdParty: parseInt(sec.sequenceThirdParty),
-      sequenceThirdParty2: parseInt(expediente.sequenceThirdParty2),
-      pageSize: "A4",
-      pageOrientation: "landscape",
-      pageMargins: [40, 60, 40, 60], // left, top, right, bottom margin values
-    };
+    const expediente = JSON.parse(localStorage.getItem('expediente'));
+    const expedienteActual = JSON.parse(this.expediente.getData('expedienteActual'));
+    let data = {
+      sequenceThirdParty : sec.sequenceThirdParty,
+      sequenceThirdParty2 :expedienteActual.exp_sec
+    }
+   // this.pdfUrl=  this.expediente.consultaArchivoURL(data);
 
-    // Generating the pdf
-    this.generatedPDF = pdfMake.createPdf(this.documentDefinition);
-    console.log(this.generatedPDF)
-    // This generated pdf buffer is used for the download, print and for viewing
-    this.generatedPDF.getBuffer((buffer) => {
-      this.pdfSrc = buffer;
-    
-    });
-  }
-  
-  getData(): void {
-   
-        this.generatePDF();
-       
+
+    //this.pdfUrl =`http://localhost:5000/api/self-management/listar-archivos/consulta-archivos?sequenceThirdParty2=${expediente.sequenceThirdParty2}&sequenceThirdParty=${sec.sequenceThirdParty}`;
 
   }
+
+
 
 }
-/* 
-const initialState: Upload = { state: 'PENDING', progress: 0 }
-const calculateState = (upload: Upload, event: HttpEvent<unknown>): Upload => {
-  if (isHttpProgressEvent(event)) {
-    return {
-      progress: event.total
-        ? Math.round((100 * event.loaded) / event.total)
-        : upload.progress,
-      state: 'IN_PROGRESS',
-    }
-  }
-  if (isHttpResponse(event)) {
-    return {
-      progress: 100,
-      state: 'DONE',
-    }
-  }
-  return upload
-} */
-/* 
- progress: 0 
-this.uploadFilesService.upload(fileIn,dir).subscribe(
-      event => {
-  if (event.type === HttpEventType.UploadProgress) {
-    return {
-      progress: event.total
-        ? Math.round((100 * event.loaded) / event.total)
-        : upload.progress,
-      state: 'IN_PROGRESS',
-    }
-  }
-  if (isHttpResponse(event)) {
-    return {
-      progress: 100,
-      state: 'DONE',
-    }
-  }
-  return upload
-} */

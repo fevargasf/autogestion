@@ -18,15 +18,15 @@ import { Notifier } from './util/notifier';
 import { SpinnerModule } from './shared/spinner/spinner.module';
 import {SpinnerInterceptor} from './../app/shared/spinner.interceptor'
 
-   
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LayoutComponent,
     PageNotFoundComponent,
-   
-   
+
+
   ],
   imports: [
     BrowserModule,
@@ -38,12 +38,11 @@ import {SpinnerInterceptor} from './../app/shared/spinner.interceptor'
     FontAwesomeModule,
     NotifierModule,
     SpinnerModule
-  
   ],
   providers: [
     AuthGuard,
     {provide:ErrorHandler, useClass: MyErrorHandler},
-    {provide:LocationStrategy, useClass:HashLocationStrategy},   
+    {provide:LocationStrategy, useClass:HashLocationStrategy},
      {provide:HTTP_INTERCEPTORS, useClass:SpinnerInterceptor, multi: true}
 
   ],

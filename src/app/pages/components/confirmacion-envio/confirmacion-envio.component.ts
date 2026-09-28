@@ -5,8 +5,7 @@ import {ExpedienteService} from 'src/app/core/services/expediente.service';
 
 @Component({
   selector: 'app-confirmacion-envio',
-  templateUrl: './confirmacion-envio.component.html',
-  styleUrls: ['./confirmacion-envio.component.scss']
+  templateUrl: './confirmacion-envio.component.html'
 })
 export class ConfirmacionEnvioComponent implements OnInit {
   public hola;
@@ -43,7 +42,7 @@ export class ConfirmacionEnvioComponent implements OnInit {
     if (files) {
       this.files = files;
       for (let file of files) {
-        console.log( file.name);
+
         const reader = new FileReader();
         reader.onload = (e: any) => {
           this.photos.push(this.createItem({
@@ -53,14 +52,14 @@ export class ConfirmacionEnvioComponent implements OnInit {
           }));
         }
         reader.readAsDataURL(file);
-        console.log(this.demoForm.value);
+        //console.log(this.demoForm.value);
       }
     }
   }
 
 
   public eliminaArchivos(i): void {
-    console.log(i);
+   // console.log(i);
     // this.photos.removeAt(i);
     this.files.splice(i, 1);
   }

@@ -25,8 +25,11 @@ export interface Obligaciones {
     niGradosLongitud?:number;
     longitud_min?:number;
     longitud_seg?:number;
+    niMinLongitud?:number;
+    niSegLongitud?:number;
     latitud_grados?:number;
     latitud_min?:number;
     latitud_seg?:number;
     sistema_coordenadas?: number;
+    agno_mes?:string;
 }

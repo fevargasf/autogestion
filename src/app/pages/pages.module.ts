@@ -23,9 +23,9 @@ import {DocumentRadicadoComponent} from './components/document/document-radicado
 import { CoreModule } from '../core/core.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatNativeDateModule } from '@angular/material/core';
-import {TableArchivosComponent} from '../shared/components/table-archivos/table-archivos.component';
+//import {TableArchivosComponent} from '../shared/components/table-archivos/table-archivos.component';
 import {TableObligacionesComponent} from '../shared/components/table-obligaciones/table-obligaciones.component';
-import { ListasTablasComponent } from './components/listas-tablas/listas-tablas.component';
+//import { ListasTablasComponent } from './components/listas-tablas/listas-tablas.component';
 import { OutputPdfComponent } from './components/container/output-pdf/output-pdf.component';
 import { HeaderComponent } from './components/header/header.component';
 import { OutputDocumentComponent } from './components/containerDocument/output-document/output-document.component';
@@ -36,6 +36,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { SpinnerModule } from '../shared/spinner/spinner.module';
+import { HTTP_INTERCEPTORS} from '@angular/common/http';
+import { SpinnerInterceptor } from '../shared/spinner.interceptor';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { InstructivoComponent } from '../shared/components/instructivo/instructivo.component';
+import { SignatureComponent } from '../shared/components/Signature/Signature.component';
 PdfMakeWrapper.setFonts(pdfFonts);
 
 @NgModule({
@@ -52,14 +60,14 @@ PdfMakeWrapper.setFonts(pdfFonts);
     DatosNaturalComponent,
     SelectResolucionComponent,
     DocumentRadicadoComponent,
+    SignatureComponent,
     TableObligacionesComponent,
-    TableArchivosComponent,
-    ListasTablasComponent,
+    //TableArchivosComponent,
+    //ListasTablasComponent,
     HeaderComponent,
     OutputPdfComponent,
     OutputDocumentComponent,
     HeaderDocumentComponent
-
   ],
   imports: [
     CommonModule,
@@ -69,6 +77,10 @@ PdfMakeWrapper.setFonts(pdfFonts);
     MatFormFieldModule,
     MatInputModule,
     MatRadioModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatIconModule,
     FormsModule,
     SharedModule,
     MaterialModule,
@@ -77,8 +89,14 @@ PdfMakeWrapper.setFonts(pdfFonts);
     CoreModule,
     MatProgressBarModule,
     FlexLayoutModule,
-    MatCheckboxModule,
-    MatDividerModule
+    MatDividerModule,
+    MatProgressSpinnerModule,
+    SpinnerModule
+
+  ],
+  providers: [
+     {provide:HTTP_INTERCEPTORS, useClass:SpinnerInterceptor, multi: true}
+
   ]
 })
 export class PagesModule {

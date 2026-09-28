@@ -19,7 +19,6 @@ export class HeaderDocumentComponent implements OnInit {
   constructor(
     
   ) { }
-
   ngOnInit(): void {
     
   }
@@ -34,8 +33,5 @@ export class HeaderDocumentComponent implements OnInit {
   zoom(type: string): void {
     this.setZoom.emit(type);
   }
-  onProgress(event) {
-    
-    console.log( event,"Falta poco" );
-  }
+
 }

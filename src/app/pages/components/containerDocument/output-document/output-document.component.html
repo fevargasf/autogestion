@@ -1,44 +1,40 @@
 
 <!-- header part -->
-<app-header
+<!-- <app-header
   [fileName]="fileName"
   [currentPage]="pageVariable"
   [totalPages]="totalPages"
   [zoomAmt]="zoom"
   [zoomMax]="zoomMax"
   [zoomMin]="zoomMin"
- 
-  
-></app-header>
+
+
+></app-header> -->
 <!-- <a [href]="pdfSrc | domSeguro" download="Documento.pdf">Descargar Evidencia</a>  -->
 <!-- pdf-viewer section -->
-<div class="output-pdf-viewer">
+<!-- <div class="output-pdf-viewer">
   <script src="/src/assets/vfs_fonts.js"></script>
   <script src="/node_modules/pdfmake/build/pdfmake.js"></script>
-   
-  <pdf-viewer
-    [src]="pdfSrc"
-    [(page)]="pageVariable"
-    [show-all]="true"
-    [stick-to-page]="true"
-    [render-text]="true"
-    [original-size]="false"
-    [fit-to-page]="true"
-    [autoresize]="true"
-    [show-borders]="true"
-    [zoom]="zoom"
-    (after-load-complete)="afterLoadComplete($event)"
-    #pdfViewer
-    *ngIf="upload"
-  ></pdf-viewer>
- 
- <!-- 
-  <mat-progress-bar
-  *ngIf="upload"
-  [mode]="upload.state == 'PENDING' ? 'buffer' : 'determinate'"
-  [value]="upload.progress"
->
-</mat-progress-bar> -->
 
-</div>
+</div> -->
 
+<!--         <app-header
+        [fileName]="fileName"
+        [currentPage]="pageVariable"
+        [totalPages]="totalPages"
+        [zoomAmt]="zoom"
+        [zoomMax]="zoomMax"
+        [zoomMin]="zoomMin">
+      </app-header> -->
+        <pdf-viewer
+          [src]="pdfSrc"
+          [show-all]="true"
+          [stick-to-page]="true"
+          [render-text]="true"
+          [original-size]="false"
+          [fit-to-page]="true"
+          [autoresize]="true"
+          [show-borders]="true"
+          #pdfViewer
+
+           ></pdf-viewer>

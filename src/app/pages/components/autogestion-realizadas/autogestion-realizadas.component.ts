@@ -21,7 +21,7 @@ export class AutogestionRealizadasComponent implements OnInit {
   pageSize = 10;
   pageSizeOptions: number[] = [5, 10, 15];
   pageEvent: PageEvent;
- 
+
   selectPage(page: string) {
     this.page = parseInt(page, this.listaExpediente.length) || 1;
   }
@@ -49,31 +49,28 @@ export class AutogestionRealizadasComponent implements OnInit {
   public getdataLocalStorage(): void {
     const data = JSON.parse(localStorage.getItem('sec'));
     this.sec = data;
-    console.log(this.sec);
     this.expedienteService.getListaExpedientes(data.sequenceThirdParty).subscribe((datas) => {
       if (datas.result) {
         this.listaExpediente = datas.lista_expedientes;
         this.listaExpediente.sort((a, b) => {
           if (a.admite_autogestion < b.admite_autogestion) {
-            console.log(a.admite_autogestion, b.admite_autogestion);
             return 1;
           }
           if (a.admite_autogestion > b.admite_autogestion) {
-            console.log(a.admite_autogestion, b.admite_autogestion);
             return -1;
           }
           // a must be equal to b
           return 0;
         });
 
-        console.log(this.listaExpediente.length);
+
         this.isLoading = false;
       }
     });
   }
 
   public responsive(event): void {
-    console.log(event.target.innerWidth);
+    //console.log(event.target.innerWidth);
   }
 
 

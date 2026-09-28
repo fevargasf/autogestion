@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private cookieService: CookieService
   ) {
-    console.log('Obteniendo cookie coraconn', this.cookieService.check('coraconn'), this.cookieService.get('coraconn'));
+
     if (this.cookieService.check('coraconn')) {
       const body = {
         coraconn: this.cookieService.get('coraconn'),
@@ -33,6 +33,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.formBuilderData();
+
   }
 
   public cargarSecuencia(sec): void {
@@ -45,7 +46,7 @@ export class LoginComponent implements OnInit {
       .getListaExpedientes(sec.secuencia)
       .subscribe((data) => {
         if (data.result) {
-          console.log(data);
+         // console.log(data);
           this.loading = false;
           this.guardarSec(secuencia);
           this.router.navigate(['/home']);
@@ -67,5 +68,8 @@ export class LoginComponent implements OnInit {
 
   public guardarSec(data): void {
     localStorage.setItem('sec', JSON.stringify(data));
+  //this.expedienteService.saveData('sec',data.sequenceThirdParty);
+
+  // console.log(this.expedienteService.getData('sec'))
   }
 }

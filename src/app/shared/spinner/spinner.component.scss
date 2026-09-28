@@ -1,63 +1,57 @@
-.lds-heart {
-    display: inline-block;
-    position: relative;
-    width: 80px;
-    height: 80px;
-    transform: rotate(45deg);
-    transform-origin: 40px 40px;
-  }
-  .lds-heart div {
-    top: 32px;
-    left: 32px;
-    position: absolute;
-    width: 32px;
-    height: 32px;
-    background: #fff;
-    animation: lds-heart 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-  }
-  .lds-heart div:after,
-  .lds-heart div:before {
-    content: " ";
-    position: absolute;
-    display: block;
-    width: 32px;
-    height: 32px;
-    background: #fff;
-  }
-  .lds-heart div:before {
-    left: -24px;
-    border-radius: 50% 0 0 50%;
-  }
-  .lds-heart div:after {
-    top: -24px;
-    border-radius: 50% 50% 0 0;
-  }
-  @keyframes lds-heart {
-    0% {
-      transform: scale(0.95);
+$bg:#dad8d285;
+$fill:#00b7c6;
+
+html,body{
+    width:100%;
+    background:$bg;
+}
+
+.hourglass{
+    display:block;
+    background:$bg;
+    margin:3em auto;
+    width:2em;
+    height:4em;
+    animation:hourglass 1s linear infinite;
+}
+
+.outer{
+    fill:$fill;
+}
+
+.middle{
+    fill:$bg;
+}
+
+@keyframes hourglass{
+    0%{
+        transform:rotate(0deg);
+        box-shadow:
+            inset $fill 0 -0em 0 0,
+            inset $bg 0 -2em 0 0,
+            inset $fill 0 -4em 0 0;
     }
-    5% {
-      transform: scale(1.1);
+    80%{
+        transform:rotate(0deg);
+        box-shadow:
+            inset $fill 0 -2em 0 0,
+            inset $bg 0 -2em 0 0,
+            inset $fill 0 -2em 0 0;
     }
-    39% {
-      transform: scale(0.85);
+    100%{
+        transform:rotate(180deg);
+        box-shadow:
+            inset $fill 0 -2em 0 0,
+            inset $bg 0 -2em 0 0,
+            inset $fill 0 -2em 0 0;
     }
-    45% {
-      transform: scale(1);
-    }
-    60% {
-      transform: scale(0.95);
-    }
-    100% {
-      transform: scale(0.9);
-    }
-  }
-  
+}
+
   .overlay{
     position: fixed;
     width: 100%;
     height: 100%;
-    background-color: rgba(70, 68, 68, 0.8);
+    background-color: $bg;
     z-index: 10;
     display: flex;
     align-items: center;

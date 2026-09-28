@@ -4,6 +4,9 @@ export interface ObligacionValue {
   viMotivoParcial: string;
   line: string;
   sistema_coordenadas: number;
+  origen?:any;
+  WGS84?:any;
+  estadObligacion?:string;
 }
 
 
@@ -13,4 +16,5 @@ export interface ObligaArchivoDTO {
   obligaObservacion: String;
   viMotivoParcial:string;
   archivos:any[];
+
 }

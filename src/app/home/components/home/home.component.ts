@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   MatSnackBar,
   MatSnackBarHorizontalPosition,
@@ -8,6 +8,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ExpedienteService } from 'src/app/core/services/expediente.service';
 import Swal from 'sweetalert2';
 import { CookieService } from 'ngx-cookie-service';
+import { finalize, find, switchMap, tap } from 'rxjs/operators';
+import { from, Subject } from 'rxjs';
+import { InstructivoComponent } from 'src/app/shared/components/instructivo/instructivo.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -15,13 +19,16 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  @ViewChild('modal') modal!: InstructivoComponent;
   public nombreUsuario: string;
   public dialogRef: any;
   public sec: string;
-  public isLoading = true;
-  public horizontalPosition: MatSnackBarHorizontalPosition = 'start';
-  public verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-  public loading = false;
+  public horizontalPosition: MatSnackBarHorizontalPosition = 'right';
+  public verticalPosition: MatSnackBarVerticalPosition = 'top';
+  public isLoading$ = Subject;
+  public isDisabled: boolean = false;
+  readonly BASE_URL = environment.urls;
+
   constructor(
     private cookieService: CookieService,
     private route: ActivatedRoute,
@@ -31,68 +38,114 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-      // this.cargarDatosIniciales();
-     this.getDataLocalStorage();
+ //   this.cargarDatosIniciales();
+  this.getDataLocalStorage();
+
+  }
+  openModal() {
+    this.modal.openModal();
   }
 
   public getDataLocalStorage(): void {
-    const sec = JSON.parse(localStorage.getItem('sec'));
-    this.loading = true;
+    this.expedienteService.show();
+    //home
+   // this.router.navigate(['']);
+  const sec = JSON.parse(localStorage.getItem('sec'));
+  this.expedienteService
+  .getListaExpedientes(sec.sequenceThirdParty)
+  .pipe(
+    tap((datas) => {
+      if (!datas.result) {
+        this.snackBar.dismiss();
+        localStorage.removeItem('sec');
+      }
+    }),
+    // Convertimos la lista de expedientes en un flujo observable
+    switchMap((datas) => from(datas.result ? datas.lista_expedientes : [])),
+    // Buscamos el primer expediente con un nombre no vacío
+    find((value) => value.ter_nombres !== ''),
+    tap((foundExpediente) => {
+      if (foundExpediente) {
+        this.nombreUsuario = foundExpediente.ter_nombres;
+        this.isDisabled = false;
+        this.snackBar.open(
+          `${foundExpediente.ter_nombres || 'No tiene un usuario'}`,
+          `🍃`,
+          {
+            horizontalPosition: this.horizontalPosition,
+            verticalPosition: this.verticalPosition,
+          }
+        );
+        this.expedienteService.hide();
 
-    this.expedienteService
-      .getListaExpedientes(sec.sequenceThirdParty)
-      .subscribe((datas) => {
-        if (datas.result) {
-          datas.lista_expedientes.map((value) => {
-            this.nombreUsuario = value.ter_nombres;
-            this.openSnackBar(this.nombreUsuario);
-           
+        Swal.fire({
+          padding:'19.3em',
+          width: '56rem',
+          background:'#fff url(assets/img/docs3.jpg)',
+          allowOutsideClick: false,
+          showCloseButton: true,
+          showConfirmButton: false,
+          customClass: {
+            closeButton: 'custom-close-button' // Clase personalizada
+          }
+        })
 
-          });
+      }else{
 
-        
-          this.loading = false;
-        } else {
-          this.snackBar.dismiss();
-              //Borrar variable cookie
-      localStorage.removeItem('sec');
-      //Redirigir a loguin en sirena
-      window.location.href="https://sirena.corantioquia.gov.co/lago/CtrlIniciarApp?appCod=TRAMITE&urlRetorno=(https%3A%2F%2Fsirena.corantioquia.gov.co%2Fesirena%2FCtrlIndex)"
-     
-        }
-      });
-  }
+        this.isDisabled = true;
+        Swal.fire({
+          title:'Su usuario, no cuenta con expedientes.',
+          icon:'warning',
+          text:'No es posible continuar, sin datos',
+          timer:2000
+        })
 
-  public siguientePrimero(estado: any): void {}
 
-  public expedienteData(data: any): void {
-    
+      }
+    })
+  )
+  .subscribe();
   }
 
   public cerrarSession(): void {
+
+   let valida = this.expedienteService.redireccionesValidas(this.BASE_URL);
+
+    if(valida){
+    window.location.href = this.BASE_URL;
+    this.delCookiePath();
+   }
+
+   document.cookie = 'coraconn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname + ';';
+   localStorage.removeItem('expedienteActual');
     localStorage.removeItem('sec');
     localStorage.removeItem('radicadoR');
     localStorage.removeItem('responsable');
-    localStorage.removeItem('responsable');
+    localStorage.removeItem('arrayR');
     localStorage.removeItem('expediente');
+    window.localStorage.removeItem("dataResponse");
+    sessionStorage.removeItem('exA');
+    sessionStorage.removeItem('expedientes.ts');
+    window.localStorage.removeItem("RES");
+    window.localStorage.removeItem("colum");
+    let userCookie = 'coraconn'
+    this.deleteCookie(userCookie);
+
   }
 
-  public openSnackBar(nombre): void {
-    if (nombre !== '') {
-      this.snackBar.open(`${nombre || 'Sin Nombre'}`, '', {
-        horizontalPosition: this.horizontalPosition,
-        verticalPosition: this.verticalPosition,
-      });
-     
-    }
+
+  ngOnDestroy(): void {
+    this.snackBar.dismiss();
+  }
+
+  public politica(): void{
     Swal.fire({
-      title: '<strong>Política de Protección de Datos</strong>',
+      title: 'Lea atentamente, <strong>Política de Protección de Datos</strong>',
       width: 600,
+      timer:2000,
       customClass: {
         container: 'swal2-container-position'
       },
-      confirmButtonColor: '#3085d6',
-      confirmButtonText: 'Aceptar',
       html:
         '<br>' +
         'Corantioquia está comprometida con el tratamiento leal, lícito, confidencial y seguro de sus datos personales. Por favor consulte nuestra Política de Tratamiento de datos personales en nuestra página web: ' +
@@ -106,25 +159,78 @@ export class HomeComponent implements OnInit, OnDestroy {
       },
     });
   }
+  private cargarDatosIniciales() {
+    this.expedienteService.getCookie().subscribe({
+      next: (res) => {
 
-  ngOnDestroy(): void {
-    this.snackBar.dismiss();
+        if (res && res.noSecTercero) {
+          // Guardar variable Cookie
+          const sec = { sequenceThirdParty: res.noSecTercero };
+          localStorage.setItem('sec', JSON.stringify(sec));
+
+          // Obtener datos del almacenamiento local
+          this.getDataLocalStorage();
+
+        } else {
+
+          let userCookie = 'coraconn'
+          this.deleteCookie(userCookie);
+          this.delCookiePath();
+          // Redirigir a login en caso de error
+          this.redirigirALogin();
+        }
+      },
+      error: (err) => {
+        // Manejo de errores
+        console.error("Error al obtener la cookie:", err);
+        // Borrar variable cookie
+        localStorage.removeItem('sec');
+        let userCookie = 'coraconn'
+        this.deleteCookie(userCookie);
+        this.delCookiePath();
+        // Redirigir a login en caso de error
+        this.redirigirALogin();
+      }/* ,
+      complete: () => {
+
+        this.redirigirALogin();
+      } */
+    });
+  }
+  private deleteCookie(cookieName) {
+  this.expedienteService.delCookie().subscribe({
+    next: (res) => {
+    localStorage.clear();
+    }
+  })
+    // Obtener la cookie actual
+    if (document.cookie.includes(cookieName)) {
+      // Eliminar la cookie con path y dominio si es necesario
+      document.cookie = `${cookieName}=; Max-Age=0; path=/; domain=` + location.host;
+      document.cookie = `${cookieName}=; Max-Age=0; path=/; domain=` + location.hostname;
+      document.cookie = 'coraconn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname + ';';
+    }
   }
 
-  private cargarDatosIniciales() {
-  /*   const cookie = { coraconn: this.cookieService.get('coraconn') };
-    if (cookie.coraconn !== '') { */
-    this.expedienteService.getCookie().subscribe((res) => {
-      //Guardar variable Coockie
-      const sec = { sequenceThirdParty: res.noSecTercero };
-      localStorage.setItem('sec', JSON.stringify(sec));
-      this.getDataLocalStorage();
-    },err=>{
-      //Borrar variable cookie
-      //localStorage.removeItem('sec');
-      //Redirigir a loguin en sirena
-      //window.location.href="https://sirena.corantioquia.gov.co/lago/CtrlIniciarApp?appCod=TRAMITE&urlRetorno=(https%3A%2F%2Fsirena.corantioquia.gov.co%2Fesirena%2FCtrlIndex)"
-      console.log("error",err)
-    });
-    }
+
+  public delCookiePath(){
+    this.expedienteService.delCookie().subscribe({
+      next: (res) => {
+        document.cookie = 'coraconn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname + ';';
+        localStorage.clear();
+
+      }
+    })
+
+  }
+
+  private redirigirALogin() {
+    let valida = this.expedienteService.redireccionesValidas(this.BASE_URL);
+
+    if(valida){
+    window.location.href = this.BASE_URL;
+    this.delCookiePath();
+   }
+  }
+
 }

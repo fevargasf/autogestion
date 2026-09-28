@@ -1,33 +1,26 @@
-<div class="row"  placement="left" ngbTooltip="Escoge el expediente al cual realizaras la autogestión" tooltipClass="my-custom-class">
-  <div class="modal-header">
-    <h1>Consultar Expediente</h1>
-  </div>
- <!--  <div class="search-expedient">
-    <h1>Tipo</h1>
-    <select [(ngModel)]="selectedBook">
-      <option *ngFor="let lista of listaExpedientes"  [ngValue]="lista.expediente">{{lista.nombre_asunto}}</option>
-    </select>
-  </div> -->
-  <div class="modal-body">
-    <select name="" id="" class="form-control" #expedientes (change)="optenerExpediente(expedientes.value)"  placement="left" ngbTooltip="Escoge el expediente al cual realizaras la autogestión" tooltipClass="my-custom-class"> 
-      <option value="">Seleccione un expediente</option>
+<div class="mx-auto w-full max-w-[550px] bg-white items-center justify-center"  placement="left" ngbTooltip="Escoge el expediente al cual realizaras la autogestión" tooltipClass="my-custom-class">
+  <label class="mb-2 mt-2 items-center justify-center flex text-base font-semibold text-[#07074D] sm:text-2xl">
+    Consultar Expediente
+  </label>
+  <hr>
+  <div class="mb-2">
+    <select  class="block w-full rounded-md border border-slate-300 bg-white px-3 py-4 font-semibold text-gray-500 shadow-sm focus:border-sky-500
+    focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm"
+    #expedientes (change)="obtenerExpediente(expedientes.value)"  placement="left" ngbTooltip="Escoge el expediente al cual realizaras la autogestión" tooltipClass="my-custom-class">
+      <option  class="font-semibold text-slate-300">Seleccione un expediente</option>
       <thead>
         <tr>
          <th *ngFor="let column of displayedColumns" (click)= "sortByCol(column)">{{column}}</th>
         </tr>
      </thead>
       <option *ngFor="let lista of listaExpedientes | pipeOrder:'nombre_asunto' " [value]="lista.expediente">{{lista.expediente}}
-        - {{lista.nombre_asunto }} - {{lista.exp_estado}}</option>
-        
+        - {{lista.nombre_asunto }}</option>
     </select>
-  
-  </div>
-  <div class="footer-body">
-    <div class="row">
-      <div class="col-md-4">
-      </div>
-      <div class="col-md-4">
-      </div>
-    </div>
+
   </div>
 </div>
+<!--
+
+
+
+-->

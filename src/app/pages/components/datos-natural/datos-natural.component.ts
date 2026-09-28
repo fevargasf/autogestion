@@ -41,7 +41,7 @@ export class DatosNaturalComponent implements OnInit {
     this.siguienteSegundoOut.emit(true);
     const expediente = JSON.parse(localStorage.getItem('expediente'));
     const sec = JSON.parse(localStorage.getItem('sec'));
-    console.log(expediente);
+   // console.log(expediente);
     const dataRadicado = {
       // tslint:disable-next-line:radix
       expecter: parseInt(expediente.sequenceThirdParty2),
@@ -54,7 +54,7 @@ export class DatosNaturalComponent implements OnInit {
     };
 
     this.expediente.obtenerRadicado(dataRadicado).subscribe((result) => {
-      console.log('radicado', result.voRadicadoCoe);
+     // console.log('radicado', result.voRadicadoCoe);
       this.expediente.radicadoData(result.voRadicadoCoe);
       if (
         result.voRadicadoCoe === null ||
@@ -76,10 +76,9 @@ export class DatosNaturalComponent implements OnInit {
     // tslint:disable-next-line:radix
     const exp = expediente.sequenceThirdParty2;
     this.expediente.getListaExpedientes(sec.sequenceThirdParty2).subscribe((data) => {
-      console.log(sec.sequenceThirdParty2)
       if (data.result) {
         this.listaExpedientes = data.lista_expedientes;
-        this.listaExpedientes.filter((item) => {
+        this.listaExpedientes.find((item) => {
           if (item.expediente === exp) {
             // console.log(item);
             this.listaExpediente = item;

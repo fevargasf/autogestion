@@ -21,18 +21,20 @@ select {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 1rem 1rem;
   border-bottom: 1px solid #dee2e6;
   border-top-left-radius: calc(.3rem - 1px);
   /* border-top-right-radius: calc(.3rem - 1px); */
-  margin: 15px 10px 10px 150px;
+ // margin: 15px 10px 10px 150px;
   z-index: 0;
 }
 
 .modal-body {
   position: relative;
+  display: flex;
   flex: 1 1 auto;
   padding: 1rem;
-  margin: 2px 150px 1px 100px;
+  justify-content: center;
+  //margin: 2px 150px 1px 100px;
 }

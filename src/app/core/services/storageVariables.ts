@@ -12,8 +12,8 @@ export class StorageVariables {
     public static sequenceThirdParty():string{
         return JSON.parse(localStorage.getItem(StorageVariables.SECUENCE_THIRD_PARTY)).sequenceThirdParty;
     }
-    public static sequenceThirdParty2():string{
-        return JSON.parse(localStorage.getItem(StorageVariables.SECUENCE_THIRD_PARTY2)).sequenceThirdParty2;
+    public static sequenceThirdParty2():any{
+        return JSON.parse(localStorage.getItem(StorageVariables.SECUENCE_THIRD_PARTY2)) | JSON.parse(localStorage.getItem(StorageVariables.SECUENCE_THIRD_PARTY2)).sequenceThirdParty2;
     }
 }
 export const allowK={

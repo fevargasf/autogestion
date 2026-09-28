@@ -20,7 +20,10 @@ export interface ListaExpedienteArr {
   admite_autogestion: string;
   motivo_no_admite: string;
   nombre_responsable?:string;
+  respon_nombre?:string;
   email_responsable?:string;
   celular_responsable?:string;
   cargo_responsable?:string;
+  agno_mes?:string;
+  en_elaboracion: string;
 }

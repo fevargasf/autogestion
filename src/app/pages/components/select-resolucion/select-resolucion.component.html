@@ -1,33 +1,4 @@
-<br>
-<br>
-<br>
-<div class="letter-text-resoluction">
-  <h2 ><b>Paso 1:</b> En el acto administrativo que otorga el permiso están las obligaciones que debe anexar
-    en este módulo, por favor, revíselas y una a una describa el cumplimiento de cada obligación.</h2>
-</div>
-<div class="col-md-12">
- 
-    <div class="tablas">
-      <button type="button" class="offset">
-        <a   routerLink="/" >
-          Inicio
-        </a>
-      </button>
-       <mat-card class="mat-elevation-z10">
-        
-         <div class="col-md-12" placement="top" ngbTooltip="Estas son las resoluciones que tienes vigentes!, has click sobre ella.">
-        <app-table-resolucion [resoluciones]="resoluciones" [isLoading]="isLoading" (evento)="seleccionarResolucion($event)" ></app-table-resolucion>
-      
-        <div class="btns">
-         
-         
-          <button type="button" class="offset">
-            <a href="#/lista-expedientes">Regresar</a>
-          </button>
-        </div>
-      </div> 
-    </mat-card>
-      
-    </div>
-  
-  </div>
+<app-table-resolucion  [resoluciones]="resoluciones" [isLoading]="isLoading" [sinResolucion]="sinResolucion" (evento)="seleccionarResolucion($event)" ></app-table-resolucion>
+
+
+

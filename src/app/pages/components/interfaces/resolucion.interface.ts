@@ -8,4 +8,5 @@ export interface Resolucion {
   sistema_coordenadas:number;
   coordenada_x:number;
   coordenada_y:number;
+  paginator?:[];
 }

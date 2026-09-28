@@ -16,7 +16,7 @@ const routes: Routes = [
   {
     path: 'lista-expedientes',
     component: ExpedientesComponent
-  },
+  }
 ];
 
 @NgModule({

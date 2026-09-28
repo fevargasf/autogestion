@@ -1,26 +1,58 @@
-<!-- los pdf cargados hasta el momento -->
-<br />
-<br />
-<br />
-<div class="letter-text-resoluction">
-  <h2>
-    <b>Paso 3:</b> En esta sección verificará la información que proporciona
-    como evidencia de cumplimiento y generará la radicación para finalizar el proceso de Autogestión.
-  </h2>
-</div>
-<div class="col-md-12">
-  <div class="btn-left">
+<h3>
+  <b>Paso 3:</b> En esta sección verificará la información que proporciona
+  como evidencia de cumplimiento, y generará el documento firmado con radicado para finalizar el proceso de Autogestión.
+</h3>
+<ng-container *ngIf="pdfSrc ; else successSkeleton">
+  <div class="-m-1.5 overflow-x-auto items-center justify-center">
+    <div class="p-1.5 w-full inline-block align-middle">
+      <div
+        class="bg-white border rounded-xl shadow-sm xl:flex dark:bg-neutral-900 dark:border-neutral-700 dark:shadow-neutral-700/70">
+        <div
+          class="w-full md:h-full md:w-96 flex flex-col p-4 bg-white border border-t-4 border-t-blue-600 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700 dark:border-t-blue-500 dark:shadow-neutral-700/70">
+          <div class="p-2 md:p-3">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white">
+              Resumen de Obligaciones:
+            </h3>
+            <p class="mt-2 text-slate-500 text-gray-500 text-justify dark:text-neutral-400">
+              Aquí encontrarás una previsualización del documento que relaciona los anexos cargados en el <b>Paso 2</b>
+              y la información de contacto del responsable que diligenció la autogestión.
+              Si todos los datos son correctos, y deseas finalizar el proceso, deberás <b><a
+                  class="cursor-pointer ">firmar</a></b> y <b>radicar</b> el documento para su posterior revisión.
+            </p>
+
+            <app-signature #modal (onNextStep)="nextStep()" [responsable]="responsable"></app-signature>
+            <div class="flex border-b mt-4">
+              <button (click)="openModal()"
+                class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-[#6A64F1] text-white hover:bg-[#6A64F1] focus:outline-none focus:bg-[#6A64F1]">
+                Firmar Documento
+              </button>
+              <button [disabled]="habilitaRadik" (click)="siguienteTercero()"
+              class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent
+              bg-[#6A64F1] text-white hover:bg-[#6A64F1] focus:outline-none focus:bg-[#6A64F1]
+              disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-50">
+                Radicar Documento
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap w-full h-full">
+          <div class="p-4 flex flex-col h-full w-full shrink-0">
+            <app-output-document *ngIf="TopdfUrl" [pdfSrc]="pdfSrc"></app-output-document>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  
-  <div class="buttons">
-    <button matStepperPrevious (click)="atrasSegundo()" type="button" class="offset">Regresar</button>
-    <button type="button" class="offset">
-      <span (click)="siguienteTercero()" class="left title">Radicar Documento</span>
-    </button>
+</ng-container>
+<ng-template #successSkeleton>
+  <div
+    class="flex flex-col w-full bg-white border rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700 dark:shadow-neutral-700/70">
+    <div id="contenedor">
+      <div class="contenedor-loader">
+        <div class="rueda"></div>
+      </div>
+      <div class="cargando">Generando PDF...</div>
+    </div>
   </div>
-  <ng-container >
-    <span style='font-size:30px;'>&#8987;</span>
-    <div  id="progressBar"><mat-progress-bar mode="indeterminate"></mat-progress-bar><h1 class="center">¡Un momento, Estamos trabajando para tí!</h1></div> 
-    <app-output-document  *ngIf="TopdfUrl"  [pdfSrc]="pdfUrl"></app-output-document> 
-  </ng-container>
-</div>
+
+</ng-template>

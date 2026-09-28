@@ -45,13 +45,13 @@ export class DatosJuridicosComponent implements OnInit {
     // tslint:disable-next-line:radix
     const exp = expediente.sequenceThirdParty2;
     this.expediente.getListaExpedientes(sec.sequenceThirdParty2).subscribe((data) => {
-      console.log(sec.sequenceThirdParty2);
+    //  console.log(sec.sequenceThirdParty2);
       if (data.result) {
         this.listaExpedientes = data.lista_expedientes;
         this.listaExpedientes.filter((item) => {
           if (item.expediente === exp) {
-            console.log(item.ter_nombres);
-            console.log(item.asu_codigo);
+           // console.log(item.ter_nombres);
+            //console.log(item.asu_codigo);
             this.listaExpediente = item;
 
             this.nombre = this.listaExpediente.ter_nombres

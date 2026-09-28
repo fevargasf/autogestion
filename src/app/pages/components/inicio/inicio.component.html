@@ -1,37 +1,182 @@
-<div class="main-stepper">
-  <div class="btn-group"> 
-    
-  <div class="row">
-   
-    <mat-horizontal-stepper [selectedIndex]="selectedIndex" [linear]="'false'" #stepper class="stepper">
-      <mat-step [editable]="isEditableInicio" [completed]="completoInicio">
-     
-          <ng-template matStepLabel>Resolución</ng-template>
-          <app-select-resolucion (seleccionResolucion)="seleccionResolucion($event)"></app-select-resolucion>
-      </mat-step>
-      
-      <mat-step [editable]="isEditable1" [completed]="completo1">
-        <form>
-          <ng-template matStepLabel>Adjuntar evidencia</ng-template>
-          <app-adjuntar *ngIf="isEditable1" (atrasPrimeroOut)="atrasPrimero($event)"
-                        (siguientePrimeroOut)="siguientePrimero($event)"
-                        [resolucionInput]="resolucion"></app-adjuntar>
-        </form>
-      </mat-step>
-     
-      <mat-step [editable]="isEditable2" [completed]="completo2">
-        <form>
-          <ng-template matStepLabel>Estado del proceso de Autogestión</ng-template>
-          <app-resumen-datos  (atrasSegundoOut)="atrasSegundo($event)"
-                             (siguienteTerceroComp)="siguienteSegundo($event)" [events]="eventSubject.asObservable()"></app-resumen-datos>
-        </form>
-      </mat-step>
-     
-      <mat-step >
-          <ng-template matStepLabel>Documento Radicado</ng-template>
-          <app-document-radicado *ngIf="completo3" [radicado]="radicado" 
-          (siguientePrimeroOut)="siguienteConfirmacion($event)"></app-document-radicado>
-      </mat-step>
-    </mat-horizontal-stepper>
+
+<div class="p-4 bg-[#eeeeee5c] ml-12 rounded-lg shadow-md dark:bg-neutral-800">
+  <ul class="menu">
+    <li title="home"><a href="#" class="menu-button home">menu</a></li>
+    <li title="inicio"><a routerLink="/" class="inicio">inicio</a></li>
+    <li title="salir"><a (click)="cerrarSession()"  class="salir">salir</a></li>
+    <li title="Instructivo"><a  (click)="openModal()"  class="Instructivo">Instructivo</a></li>
+    <li title="Politica"><a  target="_blank" rel="noopener noreferrer"
+      href="https://www.corantioquia.gov.co/proteccion-de-datos-personales/" class="Politica">Politica de Protección de Datos</a></li>
+  </ul>
+  <app-instructivo #modal></app-instructivo>
+  <!-- Stepper -->
+  <div data-hs-stepper="" class="mt-4 ">
+    <!-- Stepper Nav -->
+    <ul class="relative flex flex-row gap-x-2 mx-auto bg-gradient-to-r from-indigo-400 via-indigo-300 to-purple-500  px-1 py-1 rounded-lg">
+
+      <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" [class.hs-stepper-active]="isActiveStep(1)">
+
+        <span class="min-w-7 min-h-7 group inline-flex items-center text-xs align-middle">
+
+          <span class="size-7 flex justify-center items-center shrink-0 bg-gray-50 font-medium text-gray-800 rounded-full">
+            <span *ngIf="!isCompletedStep(1)">1</span>
+            <svg *ngIf="isCompletedStep(1)" class="size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6A64F1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+
+          <span class="ms-2 text-sm font-medium text-gray-800 max-w-lg">
+            <span class="absolute bottom-0 left-0 h-full -ml-2">
+              <svg viewBox="0 0 487 487" class="w-auto h-full opacity-100 object-stretch" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M0 .3c67 2.1 134.1 4.3 186.3 37 52.2 32.7 89.6 95.8 112.8 150.6 23.2 54.8 32.3 101.4 61.2 149.9 28.9 48.4 77.7 98.8 126.4 149.2H0V.3z"
+                  fill="#FFF" fill-rule="nonzero" fill-opacity=".1"></path>
+              </svg>
+            </span>
+            <span class="absolute top-0 right-0 w-12 h-full -mr-3">
+              <svg viewBox="0 0 487 487" class="object-cover w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M487 486.7c-66.1-3.6-132.3-7.3-186.3-37s-95.9-85.3-126.2-137.2c-30.4-51.8-49.3-99.9-76.5-151.4C70.9 109.6 35.6 54.8.3 0H487v486.7z"
+                  fill="#FFF" fill-rule="nonzero" fill-opacity=".1"></path>
+              </svg>
+            </span>
+            Resolución
+          </span>
+        </span>
+        <div class="w-full h-px flex-1 bg-gray-100 group-last:hidden hs-stepper-success:bg-blue-600 hs-stepper-completed:bg-teal-600 dark:bg-neutral-700 dark:hs-stepper-success:bg-blue-600 dark:hs-stepper-completed:bg-teal-600"></div>
+      </li>
+      <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" [class.hs-stepper-active]="isActiveStep(2)">
+        <span class="min-w-7 min-h-7 group inline-flex items-center text-xs align-middle">
+          <span class="size-7 flex justify-center items-center shrink-0 bg-gray-50 font-medium text-gray-800 rounded-full">
+            <span *ngIf="!isCompletedStep(2)">2</span>
+            <svg *ngIf="isCompletedStep(2)" class="size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6A64F1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+          <span class="ms-2 text-sm font-medium text-gray-800 max-w-lg">
+            <span class="absolute bottom-0 left-0 h-full -ml-2">
+              <svg viewBox="0 0 487 487" class="w-auto h-full opacity-100 object-stretch" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M0 .3c67 2.1 134.1 4.3 186.3 37 52.2 32.7 89.6 95.8 112.8 150.6 23.2 54.8 32.3 101.4 61.2 149.9 28.9 48.4 77.7 98.8 126.4 149.2H0V.3z"
+                  fill="#FFF" fill-rule="nonzero" fill-opacity=".1"></path>
+              </svg>
+            </span>
+            <span class="absolute top-0 right-0 w-12 h-full -mr-3">
+              <svg viewBox="0 0 487 487" class="object-cover w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M487 486.7c-66.1-3.6-132.3-7.3-186.3-37s-95.9-85.3-126.2-137.2c-30.4-51.8-49.3-99.9-76.5-151.4C70.9 109.6 35.6 54.8.3 0H487v486.7z"
+                  fill="#FFF" fill-rule="nonzero" fill-opacity=".1"></path>
+              </svg>
+            </span>
+            Adjuntar evidencia
+          </span>
+        </span>
+        <div class="w-full h-px flex-1 bg-gray-100 group-last:hidden hs-stepper-success:bg-blue-600 hs-stepper-completed:bg-teal-600 dark:bg-neutral-700 dark:hs-stepper-success:bg-blue-600 dark:hs-stepper-completed:bg-teal-600"></div>
+      </li>
+      <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" [class.hs-stepper-active]="isActiveStep(3)">
+        <span class="min-w-7 min-h-7 group inline-flex items-center text-xs align-middle">
+          <span class="size-7 flex justify-center items-center shrink-0 bg-gray-50 font-medium text-gray-800 rounded-full">
+            <span *ngIf="!isCompletedStep(3)">3</span>
+            <svg *ngIf="isCompletedStep(3)" class="size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6A64F1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+          <span class="ms-2 text-sm font-medium text-gray-800 max-w-lg">
+            <span class="absolute bottom-0 left-0 h-full -ml-2">
+              <svg viewBox="0 0 487 487" class="w-auto h-full opacity-100 object-stretch" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M0 .3c67 2.1 134.1 4.3 186.3 37 52.2 32.7 89.6 95.8 112.8 150.6 23.2 54.8 32.3 101.4 61.2 149.9 28.9 48.4 77.7 98.8 126.4 149.2H0V.3z"
+                  fill="#FFF" fill-rule="nonzero" fill-opacity=".1"></path>
+              </svg>
+            </span>
+            <span class="absolute top-0 right-0 w-12 h-full -mr-3">
+              <svg viewBox="0 0 487 487" class="object-cover w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M487 486.7c-66.1-3.6-132.3-7.3-186.3-37s-95.9-85.3-126.2-137.2c-30.4-51.8-49.3-99.9-76.5-151.4C70.9 109.6 35.6 54.8.3 0H487v486.7z"
+                  fill="#FFF" fill-rule="nonzero" fill-opacity=".1"></path>
+              </svg>
+            </span>
+           Firmar Documento
+          </span>
+        </span>
+        <div class="w-full h-px flex-1 bg-gray-100 group-last:hidden hs-stepper-success:bg-blue-600 hs-stepper-completed:bg-teal-600 dark:bg-neutral-700 dark:hs-stepper-success:bg-blue-600 dark:hs-stepper-completed:bg-teal-600"></div>
+      </li>
+      <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" [class.hs-stepper-active]="isActiveStep(4)">
+        <span class="min-w-7 min-h-7 group inline-flex items-center text-xs align-middle">
+          <span class="size-10 flex justify-center items-center shrink-0 bg-gray-50 font-medium text-gray-800 rounded-full">
+            <span *ngIf="!isCompletedStep(4)">4</span>
+            <svg *ngIf="isCompletedStep(4)" class="size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6A64F1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+          <span class="ms-2 text-sm font-medium text-gray-800 max-w-lg">
+            <span class="absolute bottom-0 left-0 h-full -ml-2">
+              <svg viewBox="0 0 487 487" class="w-auto h-full opacity-100 object-stretch" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M0 .3c67 2.1 134.1 4.3 186.3 37 52.2 32.7 89.6 95.8 112.8 150.6 23.2 54.8 32.3 101.4 61.2 149.9 28.9 48.4 77.7 98.8 126.4 149.2H0V.3z"
+                  fill="#FFF" fill-rule="nonzero" fill-opacity=".1"></path>
+              </svg>
+            </span>
+            <span class="absolute top-0 right-0 w-12 h-full -mr-3">
+              <svg viewBox="0 0 487 487" class="object-cover w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M487 486.7c-66.1-3.6-132.3-7.3-186.3-37s-95.9-85.3-126.2-137.2c-30.4-51.8-49.3-99.9-76.5-151.4C70.9 109.6 35.6 54.8.3 0H487v486.7z"
+                  fill="#FFF" fill-rule="nonzero" fill-opacity=".1"></path>
+              </svg>
+            </span>
+            Documento Radicado
+          </span>
+        </span>
+        <div class="w-full h-px flex-1 bg-gray-100 group-last:hidden hs-stepper-success:bg-blue-600 hs-stepper-completed:bg-teal-600 dark:bg-neutral-700 dark:hs-stepper-success:bg-blue-600 dark:hs-stepper-completed:bg-teal-600"></div>
+      </li>
+    </ul>
+    <!-- Stepper Content -->
+    <div class="mt-4 sm:mt-8">
+      <div *ngIf="isActiveStep(1)">
+        <!-- Contenido del Paso 1 -->
+        <app-select-resolucion  (seleccionResolucion)="seleccionResolucion($event)"></app-select-resolucion>
+      </div>
+      <div *ngIf="isActiveStep(2)">
+        <!-- Contenido del Paso 2 -->
+        <app-adjuntar (evento)="lengthObliga($event)"
+       [resolucionInput]="resolucion"></app-adjuntar>
+      </div>
+      <div *ngIf="isActiveStep(3)">
+        <app-resumen-datos (onNextStep)="nextStep()"
+       [events]="eventSubject.asObservable()"></app-resumen-datos>
+      </div>
+      <div *ngIf="isActiveStep(4)">
+        <app-document-radicado (onPrevtStep)="previousStep()"
+        (siguientePrimeroOut)="siguienteConfirmacion($event)"></app-document-radicado>
+      </div>
+    </div>
+    <!-- Button Group -->
+    <div class="mt-5 flex justify-between items-center gap-x-2">
+
+      <button *ngIf="currentStep !== 1 && currentStep !== 4"  class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+      (click)="previousStep()" [disabled]="currentStep === 1">
+      <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m15 18-6-6 6-6"></path>
+      </svg>Regresar</button>
+
+      <button *ngIf="currentStep === 1"  type="button" class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700">
+        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m15 18-6-6 6-6"></path>
+        </svg>
+        <a routerLink="lista-expedientes">Regresar</a>
+      </button>
+      <button *ngIf="currentStep != 4 &&  currentStep != 3 " class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-[#6A64F1] text-white hover:bg-[#6A64F1] focus:outline-none focus:bg-[#6A64F1] disabled:opacity-50 disabled:pointer-events-none"
+       (click)="nextStep()" [disabled]="currentStep === 1 || this.vistaPre">
+       Siguiente
+       <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m9 18 6-6-6-6"></path>
+      </svg>
+      </button>
+
+    </div>
   </div>
+  <!-- End Stepper -->
 </div>
+
+
+
